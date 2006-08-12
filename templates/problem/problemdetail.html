@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}
+Problem detail - {{object.id}} {{object.title}} 
+{% endblock %}
+
+{% block content %}
+
+<h2>Title {{object.title}} </h2>
+
+<table>
+  <tr>
+    <td>Problem Id</td><td> {{object.problemid}}</td>
+  </tr>
+  <tr>
+    <td>Time Limit</td><td> {{object.timelimit}}</td>
+  </tr>
+  <tr>
+    <td>Memory Limit</td><td>{{object.memorylimit}}</td>
+  </tr>
+</table>
+
+<h2>Description</h2>
+{{object.description}} 
+
+<h2>Input</h2>
+{{object.input}}
+
+<h2>Output</h2>
+{{object.output}}
+
+<h2>Sample Input</h2>
+{{object.sampleinput}}
+
+<h2>Sample Output</h2>
+{{object.sampleoutput}}
+
+<h2>Hint</h2>
+{{object.hint}}
+
+<h2>Origin</h2>
+{{object.origin}}
+
+<hr />
+<table>
+  <tr>
+    <td>
+      <a href="/problem/{{object.problemid}}/submit/">Submit</a>
+    </td>
+    <td>
+      <a href="/problem/{{object.problemid}}/status/">Status</a>
+    </td>
+  </tr>
+</table>
+
+{% endblock %}

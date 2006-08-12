@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h2>Problem List</h2>
+
+
+<table border="1">
+<tr>
+  <td>problem id</td>
+  <td>problem title</td>
+</tr>
+{% for problem in object.problem.all %}
+<tr>
+   <td><a href="/problem/{{problem.problemid}}/"> {{problem.problemid}} </a> </td>
+   <td><a href="/problem/{{problem.problemid}}/"> {{problem.title}} </a> </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

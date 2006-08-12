@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" action="">
+<table>
+
+  <tr>
+    <td>Problem</td>
+    <td>{{ problem.problemid }} {{problem.title}}</td>
+  </tr>
+  <tr>
+    <td>Language: </td>
+    <td>{{ form.language }}</td>
+  </tr>
+
+  <tr>
+    <td>Source Code:</td>
+    <td>{{ form.sourcecode }}</td>
+  </tr>
+
+</table>
+<input type="submit">
+</form>
+{% endblock %}
+
+
+

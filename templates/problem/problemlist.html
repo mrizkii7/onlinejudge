@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{volume.title}}</h2>
+<p>{{volume.description}}</p>
+<table>
+{% for problem in problem_list %}
+<tr>
+   <td><a href="/problem/{{problem.id}}/"> {{problem.id}} </a> </td>
+   <td><a href="/problem/{{problem.id}}/"> {{problem.title}} </a> </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

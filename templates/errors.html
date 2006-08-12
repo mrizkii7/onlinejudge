@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<h1>Please go back and correct the following error{{ errors|pluralize }}:</h1>
+<ul>
+    {% for e in errors.items %}
+    <li>Field "{{ e.0 }}": {{ e.1|join:", " }}</li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

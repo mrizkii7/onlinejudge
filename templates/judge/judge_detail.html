@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}
+Problem detail - {{object.id}}
+{% endblock %}
+
+{% block content %}
+
+<table>
+  <tr>
+    <td>Judge Id</td><td> {{object.id}}</td>
+  </tr>
+  <tr>
+    <td>User</td><td><a href="/users/{{object.user.id}}/">{{object.user}}</a></td>
+  </tr>
+  <tr>
+    <td>Problem</td><td><a href="/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
+  </tr>
+  <tr>
+    <td>Language</td><td> {{object.language}}</td>
+  </tr>
+  <tr>
+    <td>Submit Time</td><td>{{object.submittime}}</td>
+  </tr>
+  <tr>
+    <td>Result</td><td>{{object.result}}</td>
+  </tr>
+  <tr>
+    <td>Souce Code</td><td><code> {% ifequal user object.user %}{{object.sourcecode}} {% else %} Hidden {% endifequal %}</code></td>
+  </tr>
+</table>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" action="/users/logincheck/">
+<table>
+
+<tr>
+<td>Username: </td>
+<td><input type="text" name="username"></td>
+</tr>
+<tr>
+<td>Password:</td>
+<td><input name="password" type="password"></td>
+</tr>
+
+</table>
+<input value="login" type="submit">
+</form>
+
+{% endblock %}

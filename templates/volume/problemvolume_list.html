@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Volume List</h2>
+
+
+<table border="1">
+<tr>
+  <td>volume id</td>
+  <td>volume title</td>
+</tr>
+{% for volume in object_list %}
+<tr>
+   <td><a href="/volume/{{volume.id}}/"> {{volume.id}} </a> </td>
+   <td><a href="/volume/{{volume.id}}/"> {{volume.title}} </a> </td>
+
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}
