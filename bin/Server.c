@@ -4,7 +4,6 @@
 /*  运行环境：Debian Linux； 开发工具：ANSI C； DBMS：MySQL                        */
 /*  完成日期：2005年5月1日                                                        */
 /* compile command: gcc -lmysqlclient -lpthread Server0.c */
-
 /********************************************************************************/
 
 #include <stdio.h>
