@@ -24,6 +24,7 @@ RESULT_CHOICES = (
     ('OT', 'Out of Time'),
     ('RV', 'Rule Violated'),
     ('WAIT', 'Waiting'),
+    ('TESTING','Testing'),
 )
 
 class Judge(models.Model):
