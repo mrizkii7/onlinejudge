@@ -8,6 +8,7 @@ from oj.volume.models import ProblemVolume
 from oj.userprofile.views import userpermitproblem
 from django import forms
 
+import socket
 import datetime
 
 def problemdetail(request, problemid):
@@ -16,6 +17,14 @@ def problemdetail(request, problemid):
         errors = {'Permission not allowed':''}
         return render_to_response('errors.html',{'errors':errors})
     return render_to_response('problem/problemdetail.html', {'object':problem, 'user':request.user})
+
+def notify_judger():
+    HOST = '127.0.0.1'  # The judger host
+    PORT = 10001        # The same port as used by the server
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST, PORT))
+    s.close()
+
 
 def problemsubmit(request, problemid):
     manipulator = Judge.AddManipulator()
@@ -43,6 +52,7 @@ def problemsubmit(request, problemid):
         else:
             manipulator.do_html2python(new_data)
             manipulator.save(new_data)
+            notify_judger()
             return render_to_response('problem/problemsubmitresult.html', {'user':request.user})
     else:
         errors = {}
