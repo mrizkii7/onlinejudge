@@ -2,7 +2,7 @@
 {% block content %}
 <h2>{{ problem.problemid }} {{problem.title}}</h2>
 
-<table>
+<table border = "1">
 {% for judge in judge_list %}
 <tr>
    <td><a href="/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
