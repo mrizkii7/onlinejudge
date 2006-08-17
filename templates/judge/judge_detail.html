@@ -5,7 +5,7 @@ Problem detail - {{object.id}}
 
 {% block content %}
 
-<table>
+<table border = '1'>
   <tr>
     <td>Judge Id</td><td> {{object.id}}</td>
   </tr>
@@ -25,7 +25,9 @@ Problem detail - {{object.id}}
     <td>Result</td><td>{{object.result}}</td>
   </tr>
   <tr>
-    <td>Souce Code</td><td><code> {% ifequal user object.user %}{{object.sourcecode}} {% else %} Hidden {% endifequal %}</code></td>
+    <td>Result_detail</td><td><pre>{{object.result_detail}}</pre></td>
+  <tr>
+    <td>Souce Code</td><td><pre><code> {% ifequal user object.user %}{{object.sourcecode}} {% else %} Hidden {% endifequal %}</code></pre></td>
   </tr>
 </table>
 

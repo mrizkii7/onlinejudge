@@ -25,6 +25,7 @@ RESULT_CHOICES = (
     ('RV', 'Rule Violated'),
     ('WAIT', 'Waiting'),
     ('TESTING','Testing'),
+    ('JE', 'Judger internal error'),
 )
 
 class Judge(models.Model):
@@ -34,7 +35,8 @@ class Judge(models.Model):
     sourcecode = models.TextField('Source Code')
     submittime = models.DateTimeField('Submit Time')
     result = models.CharField('Result', maxlength = 100, blank = True, choices = RESULT_CHOICES)
-
+    result_detail = models.TextField('Detail of Result', blank = True)
+    
     def __str__(self):
 	return '%s %s %s %s %s' % (self.user, self.problem, self.language, self.submittime, self.result)
 
