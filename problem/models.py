@@ -3,6 +3,12 @@ from django.db import models
 
 # Create your models here.
 
+JUDGERULE_CHOICES = (
+    ('STRICT', 'strict judge input and output'),
+    ('SPECIAL', 'special judge using a specific program'),
+    ('IGNOREWHITE', 'ignore white spaces in output'),
+)
+
 class Problem(models.Model):
     problemid = models.PositiveIntegerField('Problem ID', unique=True)
     title = models.CharField('Title', maxlength=256)
@@ -15,6 +21,8 @@ class Problem(models.Model):
     hint = models.TextField('Hint', blank = True)
     memorylimit = models.PositiveIntegerField('Memory Limit(KB)', default = 32768, blank = True)
     timelimit = models.PositiveIntegerField('Time Limit(ms)', default = 1000, blank = True)
+    judgerule = models.CharField('Judge rule', maxlength = 100, choices = JUDGERULE_CHOICES, default='STRICT')
+    specialjudge = models.TextField('Special Judge Program', blank = True)
 
     def __str__(self):
 	return "%s %s"%(self.problemid, self.title)

@@ -36,15 +36,15 @@ def problemsubmit(request, problemid):
     
     if(request.POST):
         submittime = datetime.datetime.now()
-        result = 'WAIT'
         
         new_data = request.POST.copy()
 
         new_data['user'] = user.id
         new_data['problem'] = problem.id
         new_data['submittime_date'] = str(submittime.date())
-        new_data['submittime_time'] = str(submittime.time().strftime('%H:%M'))
-        new_data['result'] = result
+        new_data['submittime_time'] = str(submittime.time().strftime('%H:%M:%S'))
+        new_data['result'] = 'WAIT'
+        new_data['result_detail'] = ''
 
         errors = manipulator.get_validation_errors(new_data)
         if errors:

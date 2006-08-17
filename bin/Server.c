@@ -49,6 +49,14 @@ int thread_exit_state = 1;
 
 void disposal_pthread_function(void *);
 void monitor_pthread_function(void);
+void get_only_fn(char *);
+share_queue_node * delete_queue_element(share_queue_node *);
+MYSQL_RES * db_query(char *);
+pid_t get_child_pid(pid_t );
+int compare_result(char *,char *);
+
+
+  
 
 
 /*********************************************************************/
@@ -59,52 +67,50 @@ void monitor_pthread_function(void);
 
 int main()
 {
-   
-   int sock,* nsock;
-   socklen_t sin_size;
-   pthread_t thread;
-   struct sockaddr_in my_addr,their_addr;
+  int sock,* nsock;
+  socklen_t sin_size;
+  pthread_t thread;
+  struct sockaddr_in my_addr,their_addr;
 
-   system("rm -r tmpdir");
-   system("mkdir tmpdir");
+  system("rm -r tmpdir");
+  system("mkdir tmpdir");
       
-   if((sock=socket(AF_INET,SOCK_STREAM,0))==-1) {
-       syslog(LOG_USER|LOG_INFO, "Socket Create Error\n");
-       exit(1);
-   }
+  if((sock=socket(AF_INET,SOCK_STREAM,0))==-1) {
+    syslog(LOG_USER|LOG_INFO, "Socket Create Error\n");
+    exit(1);
+  }
 
-   my_addr.sin_family=AF_INET;
-   my_addr.sin_port=htons(MYPORT);
-   my_addr.sin_addr.s_addr=inet_addr(MYIP);
-   bzero(&(my_addr.sin_zero),8);
-
-   if(bind(sock,(struct sockaddr *)&my_addr,sizeof(struct sockaddr))==-1) {
-       syslog(LOG_USER|LOG_INFO, "Socket Bind Error");
-       exit(1);
-   }
-      
-   if(listen(sock,10)==-1) {
-       syslog(LOG_USER|LOG_INFO, "Socket Listen Error");
-       exit(1);
-   }
-   
-   squeue.data=NULL;
-   squeue.length=0;
-   pthread_mutex_init(&mutex_share_queue,NULL);
-   pthread_mutex_init(&mutex_queue_null,NULL);
-   
-   pthread_create(&thread, NULL,(void *)&monitor_pthread_function, NULL);
-   
-   sin_size=sizeof(struct sockaddr_in);
-   while(1) {
-       nsock=(int * )malloc(sizeof(int));
-       if((*nsock=accept(sock,(struct sockaddr *)&their_addr,&sin_size))==-1) {
-           syslog(LOG_USER|LOG_INFO, "Socket Accept Error");
-           continue;
-       }
-       pthread_create(&thread, NULL,(void*)&disposal_pthread_function, (void *)nsock);
-   }
-
+  my_addr.sin_family=AF_INET;
+  my_addr.sin_port=htons(MYPORT);
+  my_addr.sin_addr.s_addr=inet_addr(MYIP);
+  bzero(&(my_addr.sin_zero),8);
+  
+  if(bind(sock,(struct sockaddr *)&my_addr,sizeof(struct sockaddr))==-1) {
+    syslog(LOG_USER|LOG_INFO, "Socket Bind Error");
+    exit(1);
+  }
+  
+  if(listen(sock,10)==-1) {
+    syslog(LOG_USER|LOG_INFO, "Socket Listen Error");
+    exit(1);
+  }
+  
+  squeue.data=NULL;
+  squeue.length=0;
+  pthread_mutex_init(&mutex_share_queue,NULL);
+  pthread_mutex_init(&mutex_queue_null,NULL);
+  
+  pthread_create(&thread, NULL,(void *)&monitor_pthread_function, NULL);
+  
+  sin_size=sizeof(struct sockaddr_in);
+  while(1) {
+    nsock=(int * )malloc(sizeof(int));
+    if((*nsock=accept(sock,(struct sockaddr *)&their_addr,&sin_size))==-1) {
+      syslog(LOG_USER|LOG_INFO, "Socket Accept Error");
+      continue;
+    }
+    pthread_create(&thread, NULL,(void*)&disposal_pthread_function, (void *)nsock);
+  } 
 }
 
 /***************************************************************************/
@@ -115,91 +121,87 @@ int main()
 /***************************************************************************/
 
 void monitor_pthread_function(void) {
-   void get_only_fn(char *);
-   MYSQL_RES * db_query(char *sql);
-   share_queue_node * delete_queue_element(share_queue_node *);
-
-   share_queue_node * p;
-   FILE * stat_fp,* statm_fp;
-   unsigned run_time,run_memory;
-   char str[100];
+  share_queue_node * p;
+  FILE * stat_fp,* statm_fp;
+  unsigned run_time,run_memory;
+  char str[100];
 	  
-   while(1) {
-       pthread_mutex_lock(&mutex_queue_null);
+  while(1) {
+    pthread_mutex_lock(&mutex_queue_null);
+    
+    pthread_mutex_lock(&mutex_share_queue);
+    for(p=squeue.data;p;) {   
+      sprintf(str,"/proc/%d/statm",p->process_id);
+      if(!(statm_fp=fopen(str,"r"))) { 
+	p=delete_queue_element(p);      
+	continue; 
+      }
+      
+      sprintf(str,"/proc/%d/stat",p->process_id);
+      if(!(stat_fp=fopen(str,"r"))) { 
+	p=delete_queue_element(p); 
+	fclose(statm_fp); 
+	continue;
+      }   
+      
+      fscanf(statm_fp,"%s",str); 
+      run_memory=atoi(str);
+      
+      fscanf(stat_fp,"%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s");
+      fscanf(stat_fp,"%s",str); 
+      run_time=atoi(str); 
+      fscanf(stat_fp,"%s",str); 
+      run_time+=atoi(str);
 
-       pthread_mutex_lock(&mutex_share_queue);
-       for(p=squeue.data;p;) {   
-             sprintf(str,"/proc/%d/statm",p->process_id);
-             if(!(statm_fp=fopen(str,"r"))) { 
-                 p=delete_queue_element(p);      
-                 continue; 
-             }
-             
-             sprintf(str,"/proc/%d/stat",p->process_id);
-             if(!(stat_fp=fopen(str,"r"))) { 
-                 p=delete_queue_element(p); 
-                 fclose(statm_fp); 
-                 continue;
-             }   
-             
-             fscanf(statm_fp,"%s",str); 
-             run_memory=atoi(str);
-             
-             fscanf(stat_fp,"%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s");
-             fscanf(stat_fp,"%s",str); 
-             run_time=atoi(str); 
-             fscanf(stat_fp,"%s",str); 
-             run_time+=atoi(str);
-             
-             fclose(statm_fp);
-             fclose(stat_fp);   
-                 
-             if(run_memory/50>=p->memory_limit) { 
-                 sprintf(str,"kill %d",p->process_id);
-                 system(str);       
-                 sprintf(str,"kill %d",p->shell_id);
-                 system(str);                        
-                 pthread_cancel(p->thread_id); 
-                 sprintf(str,"insert into feedbacks(userid,problemid,backinfo,\
-                             runtime,runmemory) values(%s,%s,'memory limit',%d,%d)",
-                             p->userid,p->problemid,run_time/100,run_memory/50);
-                 db_query(str);
-                 
-                 sprintf(str,"update users set totalsubmittimes=totalsubmittimes+1\
+      fclose(statm_fp);
+      fclose(stat_fp);
+      
+      if(run_memory/50>=p->memory_limit) { 
+	sprintf(str,"kill %d",p->process_id);
+	system(str);     
+	sprintf(str,"kill %d",p->shell_id);
+	system(str);
+	pthread_cancel(p->thread_id);
+	sprintf(str,"insert into feedbacks(userid,problemid,backinfo,\
+                runtime,runmemory) values(%s,%s,'memory limit',%d,%d)",
+		p->userid,p->problemid,run_time/100,run_memory/50);
+	db_query(str);
+        
+	sprintf(str,"update users set totalsubmittimes=totalsubmittimes+1\
                               where userid=%s",p->userid);
-                 db_query(str);
-
-                 p=delete_queue_element(p);
-                 continue;
-             }
-             else if(run_time/100>=p->time_limit) {  
-                 sprintf(str,"kill %d",p->process_id);
-                 system(str);
-                 sprintf(str,"kill %d",p->shell_id);
-                 system(str); 
-                 pthread_cancel(p->thread_id);
-                 sprintf(str,"insert into feedbacks(userid,problemid,backinfo,\
+	db_query(str);
+	
+	p=delete_queue_element(p);
+	continue;
+      }
+      else if(run_time/100>=p->time_limit) {  
+	sprintf(str,"kill %d",p->process_id);
+	system(str);
+	sprintf(str,"kill %d",p->shell_id);
+	system(str); 
+	pthread_cancel(p->thread_id);
+	sprintf(str,"insert into feedbacks(userid,problemid,backinfo,\
                              runtime,runmemory) values(%s,%s,'time limit',%d,%d)",
-                             p->userid,p->problemid,run_time/100,run_memory/50);
-                 db_query(str);
- 
-                 sprintf(str,"update users set totalsubmittimes=totalsubmittimes+1\
+		p->userid,p->problemid,run_time/100,run_memory/50);
+	db_query(str);
+	
+	sprintf(str,"update users set totalsubmittimes=totalsubmittimes+1\
                               where userid=%s",p->userid);
-                 db_query(str);
-                 
-                 p=delete_queue_element(p);
-                 continue;
-             }
-                
-             p=p->next;   
-
-         }        
-	 pthread_mutex_unlock(&mutex_share_queue); 
-         
-	 if(squeue.length)
-           pthread_mutex_unlock(&mutex_queue_null);
-
-   }  
+	db_query(str);
+	
+	p=delete_queue_element(p);
+	continue;
+      }
+      
+      p=p->next;   
+      
+    }        
+    pthread_mutex_unlock(&mutex_share_queue); 
+    
+    if(squeue.length)
+      pthread_mutex_unlock(&mutex_queue_null);
+    
+  }  
 }
 
 /******************************************************************************/
@@ -210,19 +212,15 @@ void monitor_pthread_function(void) {
 /*  结果信息写入数据库。                                                         */
 /*******************************************************************************/
 
-void disposal_pthread_function( void * sock)
-{
-   void get_only_fn(char *);
-   MYSQL_RES * db_query(char *);
-   pid_t get_child_pid(pid_t );
-   int compare_result(char *,char *);
-   share_queue_node * delete_queue_element(share_queue_node *);  
-   
+void disposal_pthread_function( void * sock) {
    int n,i,j;
    char source_code[5050];
    char userid[20];
    char problemid[20];
    char language[10];
+   char source_fn[30];
+   FILE * fp;
+
    
    if((n=recv(*((int *)sock),source_code,5050,0))==-1) {
        syslog(LOG_USER|LOG_INFO, "Receive Data Error\n");
@@ -257,8 +255,6 @@ void disposal_pthread_function( void * sock)
             for(n=j;source_code[n];n++)
                 source_code[n]=source_code[n+1];
   
-   char source_fn[30];
-   FILE * fp;
 
    get_only_fn(source_fn);  
     
@@ -430,120 +426,119 @@ void disposal_pthread_function( void * sock)
 
 }
 
-int compare_result(char *str1,char *str2)
-{
-   int m=0,n=0,mlen,nlen;
+int compare_result(char *str1,char *str2) {
+  int m=0,n=0,mlen,nlen;
   
-   mlen=strlen(str1);
-   nlen=strlen(str2);
-   while(m<mlen&&n<nlen) {
-       if(str1[m]==' ') { m++; continue; }
-       if(str2[n]==' ') { n++; continue; }
+  mlen=strlen(str1);
+  nlen=strlen(str2);
+  while(m<mlen&&n<nlen) {
+    if(str1[m]==' ') { 
+      m++; 
+      continue; 
+    }
+    if(str2[n]==' ') { 
+      n++; 
+      continue; 
+    }
+    if(str1[m]!=str2[n]) 
+      return 0;
+    m++; n++;
+  }
+  for(;m<mlen;m++)
+    if(str1[m]!=' ') 
+      return 0;
+  for(;n<nlen;n++)
+    if(str1[n]!=' ') 
+      return 0; 
+  return 1; 
+}
 
-       if(str1[m]!=str2[n]) return 0;
+share_queue_node * delete_queue_element(share_queue_node * p) {
+  share_queue_node * pp;
 
-       m++; n++;
-   }
+  pp=squeue.data;
+  if(pp==p) {
+    squeue.data=squeue.data->next;
+    squeue.length--;
+    free(p);
+    return squeue.data;
+  }
 
-   for(;m<mlen;m++)
-       if(str1[m]!=' ') return 0;
+  for(;pp->next!=p;pp=pp->next) 
+    ;
 
-   for(;n<nlen;n++)
-       if(str1[n]!=' ') return 0; 
+  pp->next=p->next;
+  squeue.length--;
+  free(p);
 
-   return 1; 
+  return pp->next;
+}
+
+pid_t get_child_pid(pid_t pid) {
+  FILE *fp,*proc_fp;
+  char str[100],cmd[40],pid_str[10],fn[30];   
+  int i,j,n;
+
+  get_only_fn(fn); 
+  strcat(fn,".txt");
+  sprintf(cmd,"ps au >%s",fn);  
+  system(cmd);   
+  
+  if(!(fp=fopen(fn,"r"))) {
+    sprintf(cmd,"rm %s",fn);  
+    system(cmd);
+    return 0;
+  }
+  
+  if(!feof(fp)) 
+    fgets(str,100,fp);
+  
+  while(!feof(fp)) {               
+    fgets(str,100,fp);             
+    
+    for(i=0,n=strlen(str);i<n;i++)
+      if(str[i]!=' ') 
+	break;
+    
+    for(;i<n;i++)
+      if(str[i]==' ')
+	break;
+    
+    for(;i<n;i++)
+      if(str[i]!=' ')
+	break;
+
+    for(j=0;i<n;i++,j++)  
+      if(str[i]!=' ') 
+	pid_str[j]=str[i]; 
+      else  
+	break;
+    
+    
+    pid_str[j]=0; 
+    sprintf(cmd,"/proc/%s/stat",pid_str); 
+    
+    if(!(proc_fp=fopen(cmd,"r"))) 
+      continue;      
+    
+    fscanf(proc_fp,"%*s%*s%*s");
+    fscanf(proc_fp,"%s",str);
+    fclose(proc_fp);
+    
+    if(pid==atoi(str)) { 
+      sprintf(cmd,"rm %s",fn); 
+      system(cmd);  
       
-}
-
-share_queue_node * delete_queue_element(share_queue_node * p)
-{
-   share_queue_node * pp;
-
-   pp=squeue.data;
-   if(pp==p) {
-       squeue.data=squeue.data->next;
-       squeue.length--;
-       free(p);
-       return squeue.data;
-   }
-
-   for(;pp->next!=p;pp=pp->next) ;
-
-   pp->next=p->next;
-   squeue.length--;
-   free(p);
-
-   return pp->next;
-}
-
-pid_t get_child_pid(pid_t pid)
-{
-   void get_only_fn(char *);
-
-   FILE *fp,*proc_fp;
-   char str[100],cmd[40],pid_str[10],fn[30];   
-   int i,j,n;
-
-   get_only_fn(fn); 
-   strcat(fn,".txt");
-   sprintf(cmd,"ps au >%s",fn);  
-   system(cmd);   
-
-   if(!(fp=fopen(fn,"r"))) {
-       sprintf(cmd,"rm %s",fn);  
-       system(cmd);
-  	   return 0;
-   }
-   
-   if(!feof(fp)) 
-       fgets(str,100,fp);
-
-   while(!feof(fp)) {               
-       fgets(str,100,fp);             
-
-       for(i=0,n=strlen(str);i<n;i++)
-	   if(str[i]!=' ') 
-	       break;
-       
-       for(;i<n;i++)
-           if(str[i]==' ')
-	       break;
-       
-       for(;i<n;i++)
-	   if(str[i]!=' ')
-	       break;
-
-       for(j=0;i<n;i++,j++)  
-           if(str[i]!=' ') 
-	       pid_str[j]=str[i]; 
-           else  
-	       break;
-
-
-       pid_str[j]=0; 
-       sprintf(cmd,"/proc/%s/stat",pid_str); 
-
-       if(!(proc_fp=fopen(cmd,"r"))) 
-           continue;      
-       
-       fscanf(proc_fp,"%*s%*s%*s");
-       fscanf(proc_fp,"%s",str);
-       fclose(proc_fp);
-
-       if(pid==atoi(str)) { 
-           sprintf(cmd,"rm %s",fn); 
-           system(cmd);  
-           
-           return atoi(pid_str);
-       }   
-   }   
-
-   fclose(fp);
-   
-   sprintf(cmd,"rm %s",fn);  
-   system(cmd);
-   
-   return 0;                 
+      return atoi(pid_str);
+    }   
+  }   
+  
+  fclose(fp);
+  
+  sprintf(cmd,"rm %s",fn);  
+  system(cmd);
+  
+  return 0;                 
 } 
 
 MYSQL_RES * db_query(char *sql)
