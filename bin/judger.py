@@ -1,6 +1,26 @@
 #!/usr/bin/python
 #coding=utf-8
 
+LICENSE =
+'''
+Program Online Judger.
+Copyright (C) 2006  Zhongke Chen
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+'''
+
 import socket
 import syslog
 import os
@@ -35,11 +55,19 @@ def set_judge_result(judge, result, description = ''):
 def strict_equal(judge, testcase, output):
     return testcase.outputdata == output
 
+def signal_message(signalno):
+    if signalno == signal.SIGFPE:
+        return 'signal SIGFPE raised, Floating point exception, maybe divided by 0'
+    elif signalno == signal.SIGSEGV:
+        return 'signal SIGSEGV raised, Invalid memory reference, maybe buffer overflow or stack overflow'
+    elif signalno == signal.SIGABRT:
+        return 'signal SIGABRT raised, Programme aborted before it should be finished'
+    return 'unknown signal %d raised' % signalno
 
 def test_judge(judge):
+  set_judge_result(judge, 'TESTING')
 
-    set_judge_result(judge, 'TESTING')
-
+  try:
     basename = 'judge_%s' % judge.id
 
     base_filename = '%s%s'%(tmp_dir, basename)
@@ -127,10 +155,10 @@ def test_judge(judge):
             
             if os.WIFSIGNALED(status) and not time_limit_exceeded and not memory_limit_exceeded:
                 # todo signal name unknown yet                
-                set_judge_result(judge, 'RE', 'Signal %d raised' % os.WTERMSIG(status))
+                set_judge_result(judge, 'RE', signal_message(os.WTERMSIG(status)))
                 return
             
-            check_command = 'dump-acct -r /var/account/pacct | grep %s' % basename
+            check_command = '/usr/sbin/dump-acct -r /var/log/account/pacct | grep %s' % basename
             check_output = commands.getoutput(check_command)
             values = check_output.split('|')
             time_usage = (float(values[2])+float(values[3]))/clk_tck
@@ -139,8 +167,12 @@ def test_judge(judge):
                 set_judge_result(judge, 'TLE', 'time usage over %f'%time_usage)
                 return
 
-            if memory_limit_exceeded or memory_usage > judge.problem.memorylimit*1024:
-                set_judge_result(judge, 'MLE', 'memory usage over %f' %memory_usage)
+            if memory_limit_exceeded:
+                set_judge_result(judge, 'MLE', 'memory usage over %f case one' %memory_usage)
+                return
+
+            if memory_usage > judge.problem.memorylimit*1024:
+                set_judge_result(judge, 'MLE', 'memory usage over %f case 2' %memory_usage)
                 return
             output_file = open(output_filename, 'r')
             output = output_file.read()
@@ -161,7 +193,8 @@ def test_judge(judge):
 
     set_judge_result(judge, 'AC')
     output_file.close()
-
+  except Exception,e:
+    set_judge_result(judge, 'JE', str(e))
 
 def check_judges():
     while 1:
@@ -209,4 +242,5 @@ def main():
 
 if __name__ == '__main__':
     syslog.openlog('onlinejudge')
-    daemon.rundaemon(main, pidfile='/home/czk/oj/bin/pydaemon.pid', logfile = '/home/czk/oj/bin/pydaemon.log',  datadir = '/home/czk/oj/bin')
+    daemon.rundaemon(main, pidfile='/home/oj/oj/bin/pydaemon.pid', logfile = '/home/oj/oj/bin/pydaemon.log',  datadir = 
+'/home/oj/oj/bin')
