@@ -1,8 +1,7 @@
 #!/usr/bin/python
 #coding=utf-8
 
-LICENSE =
-'''
+LICENSE ='''
 Program Online Judger.
 Copyright (C) 2006  Zhongke Chen
 
@@ -29,14 +28,13 @@ import threading
 import time
 import signal
 import commands
-
+import traceback
 import daemon
 
 listen_port = 10001
 listen_ip = "127.0.0.1"
 tmp_dir = "/tmp/judger/"
 clk_tck = float(os.sysconf(os.sysconf_names['SC_CLK_TCK']))
-
 
 new_judge = threading.Event() #event for new judge coming
 
@@ -55,6 +53,12 @@ def set_judge_result(judge, result, description = ''):
 def strict_equal(judge, testcase, output):
     return testcase.outputdata == output
 
+def loose_equal(judge, testcase, output):
+    return False
+
+def special_judge(judge, testcase, output):
+    return False
+
 def signal_message(signalno):
     if signalno == signal.SIGFPE:
         return 'signal SIGFPE raised, Floating point exception, maybe divided by 0'
@@ -65,9 +69,9 @@ def signal_message(signalno):
     return 'unknown signal %d raised' % signalno
 
 def test_judge(judge):
-  set_judge_result(judge, 'TESTING')
+    set_judge_result(judge, 'TESTING')
 
-  try:
+#  try:
     basename = 'judge_%s' % judge.id
 
     base_filename = '%s%s'%(tmp_dir, basename)
@@ -75,13 +79,15 @@ def test_judge(judge):
     # generate source file
     source_filename = base_filename + '.' + extname[judge.language]
     sourcefile = open(source_filename, 'w')
+    if judge.language == 'python':
+	sourcefile.write('#!/usr/bin/python\n')
     sourcefile.write(judge.sourcecode)
     sourcefile.close()
 
     # compile program
     log_filename = base_filename + '.log'
-    exe_filename = base_filename + '.exe'
     if judge.language == 'c++':
+        exe_filename = base_filename + '.exe'
         compile_command = 'g++ %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
             logfile = open(log_filename)
@@ -89,6 +95,7 @@ def test_judge(judge):
             logfile.close()
             return
     elif judge.language == 'c':
+        exe_filename = base_filename + '.exe'
         compile_command = 'gcc %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
            logfile = open(log_filename)
@@ -96,10 +103,11 @@ def test_judge(judge):
            logfile.close()
            return
     elif judge.language == 'python':
-        set_judge_result(judge, 'JE', 'Not implemented yet')
-        return
+        exe_filename = source_filename
+        os.chmod(source_filename, 0755)
+
     elif judge.language == 'java':
-        set_judge_result(judge, 'JE', 'Not implemented yet')
+        set_judge_result(judge, 'JE', 'java Not implemented yet')
         return
     else:
         set_judge_result(judge, 'JE', 'Language no supported')
@@ -137,11 +145,12 @@ def test_judge(judge):
                     break
                    
                 statfile = open('/proc/%d/stat'%pid, 'r')
-                statvalue = statfile.read().split()
-                statfile.close()
+                statstring = statfile.read()
+                statvalue = statstring.split()[:]
+		statfile.close()
                 
                 time_usage = max(time_usage, int(statvalue[13]) + int(statvalue[14])) #user cputime+system cputime
-                memory_usage = max(memory_usage, int(statvalue[22]))
+                memory_usage = max(memory_usage, int(statvalue[23])*4096)
                 if time_usage / clk_tck > judge.problem.timelimit / 1000.0:
                     time_limit_exceeded = True
                 if memory_usage > judge.problem.memorylimit * 1024:
@@ -154,7 +163,6 @@ def test_judge(judge):
                 time.sleep(judge.problem.timelimit / 10000.0)
             
             if os.WIFSIGNALED(status) and not time_limit_exceeded and not memory_limit_exceeded:
-                # todo signal name unknown yet                
                 set_judge_result(judge, 'RE', signal_message(os.WTERMSIG(status)))
                 return
             
@@ -162,40 +170,43 @@ def test_judge(judge):
             check_output = commands.getoutput(check_command)
             values = check_output.split('|')
             time_usage = (float(values[2])+float(values[3]))/clk_tck
-            memory_usage = max(memory_usage, float(values[7])/4 * 1024)
+            memory_usage = max(memory_usage, int(float(values[7])/4 * 1024))
             if time_limit_exceeded or time_usage > judge.problem.timelimit / 1000.0:
                 set_judge_result(judge, 'TLE', 'time usage over %f'%time_usage)
                 return
 
             if memory_limit_exceeded:
-                set_judge_result(judge, 'MLE', 'memory usage over %f case one' %memory_usage)
+                set_judge_result(judge, 'MLE', 'memory usage over %d from proc info' %memory_usage)
                 return
 
             if memory_usage > judge.problem.memorylimit*1024:
-                set_judge_result(judge, 'MLE', 'memory usage over %f case 2' %memory_usage)
+                set_judge_result(judge, 'MLE', 'memory usage over %f from acct info' %memory_usage)
                 return
             output_file = open(output_filename, 'r')
             output = output_file.read()
             if judge.problem.judgerule == 'STRICT':
                 if not strict_equal(judge, testcase, output):
-                    set_judge_result(judge, 'WA', 'Test case #')
+                    set_judge_result(judge, 'WA')
                     output_file.close()
                     return
             elif judge.problem.judgerule == 'SPECIAL':
-                set_judge_result(judge, 'JE')
-                return
+                if not loose_equal(judge, testcase,  output):
+		    set_judge_result(judge, 'WA')
+                    return
             elif judge.problem.judgerule == 'IGNOREWHITE':
-                set_judge_result(judge, 'JE')
-                return
+                if not special_judge(judge, testcase, output):
+		    set_judge_result(judge, 'WA')
+                    return
             else:
-                set_judge_result(judge, 'JE')
+                set_judge_result(judge, 'JE', 'unknown judge rule')
                 return
 
     set_judge_result(judge, 'AC')
     output_file.close()
-  except Exception,e:
-    set_judge_result(judge, 'JE', str(e))
-
+#  except Exception,e:
+#    set_judge_result(judge, 'JE', str(e)  )
+#    raise e
+    
 def check_judges():
     while 1:
         new_judge.clear()
