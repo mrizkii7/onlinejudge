@@ -40,7 +40,8 @@ class Judge(models.Model):
     def __str__(self):
 	return '%s %s %s %s %s' % (self.user, self.problem, self.language, self.submittime, self.result)
 
-    class Admin: pass
+    class Admin:
+        list_filter = ('user','submittime','result')
 
     class Meta:
         ordering = ['-id']
