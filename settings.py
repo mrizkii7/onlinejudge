@@ -86,3 +86,11 @@ INSTALLED_APPS = (
 STATIC_PATH = '/home/oj/oj/images'
 
 AUTH_PROFILE_MODULE = 'userprofile.UserProfile'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.request"
+)
+

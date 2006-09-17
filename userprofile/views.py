@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 import django.contrib.auth as auth
 from oj.judge.models import Judge
 from oj.volume.models import ProblemVolume
+from django.template import RequestContext
 
 def login(request):
     return render_to_response('userprofile/login.html', {'user':request.user})
@@ -43,13 +44,8 @@ def userdetail(request, user_id):
     user = auth.models.User.objects.get(id__exact = user_id)
     judges = Judge.objects.filter(user__exact = user)
     acjudges = judges.select_related().filter(result__exact = 'AC')
-    profile = {'acceptcounts': acjudges.count(),
-               'submitcounts': judges.count()}
-    return render_to_response('userprofile/userdetail.html',{'object':user, 'profile':profile, 'accepted':acjudges,'user':request.user }) 
-
-def userlist(request):
-    object_list = auth.models.User.objects.all()
-    return render_to_response('userprofile/userlist.html', {'object_list':object_list,'user':request.user})
+    profile = {'acceptcounts': acjudges.count(), 'submitcounts': judges.count()}
+    return render_to_response('auth/user_detail.html',RequestContext(request, {'object':user, 'profile':profile, 'accepted':acjudges }) ) 
 
 
 def userpermitproblem(user, problem):

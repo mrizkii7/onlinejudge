@@ -39,6 +39,20 @@
         {% block content %} content {% endblock %}
       </div>
 
+      <div id="navigator">
+
+{% if is_paginated %}
+<table border = 1>
+<tr>
+   {% if has_previous %} <td><a href="./?page={{previous}}">previous</a></td>  {% endif %}
+   <td>current:{{page}}/{{pages}}</td>
+   {% if has_next %} <td><a href="./?page={{next}}">next</a></td> {% endif %}
+</tr>
+</table>
+{% endif %}
+
+      </div>
+
       <hr />
 
       <div id="footer">
