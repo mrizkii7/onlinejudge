@@ -7,6 +7,7 @@ JUDGERULE_CHOICES = (
     ('STRICT', 'strict judge input and output'),
     ('SPECIAL', 'special judge using a specific program'),
     ('IGNOREWHITE', 'ignore white spaces in output'),
+    ('MANUAL', 'manually judged'),
 )
 
 class Problem(models.Model):

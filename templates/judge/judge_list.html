@@ -16,12 +16,12 @@
 {% for judge in object_list %}
 
 <tr>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.user}} </a> </td>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.problem}} </a> </td>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.language}} </a> </td>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.result}} </a> </td>
-   <td><a href="/judge/{{judge.id}}/"> {{judge.submittime}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.user}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.problem}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.language}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.result}} </a> </td>
+   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.submittime}} </a> </td>
 </tr>
 
 {% endfor %}

@@ -20,34 +20,48 @@ Problem detail - {{object.id}} {{object.title}}
 </table>
 
 <h2>Description</h2>
+<pre>
 {{object.description}} 
+</pre>
 
 <h2>Input</h2>
+<pre>
 {{object.input}}
+</pre>
 
 <h2>Output</h2>
+<pre>
 {{object.output}}
+</pre>
 
 <h2>Sample Input</h2>
+<pre>
 {{object.sampleinput}}
+</pre>
 
 <h2>Sample Output</h2>
+<pre>
 {{object.sampleoutput}}
+</pre>
 
+{% if object.hint %}
 <h2>Hint</h2>
 {{object.hint}}
+{% endif %}
 
+{% if object.origin %}
 <h2>Origin</h2>
 {{object.origin}}
+{% endif %}
 
 <hr />
 <table>
   <tr>
     <td>
-      <a href="/problem/{{object.problemid}}/submit/">Submit</a>
+      <a href="/oj/problem/{{object.problemid}}/submit/">Submit</a>
     </td>
     <td>
-      <a href="/problem/{{object.problemid}}/status/">Status</a>
+      <a href="/oj/problem/{{object.problemid}}/status/">Status</a>
     </td>
   </tr>
 </table>
