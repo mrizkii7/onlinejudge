@@ -30,6 +30,7 @@ import signal
 import commands
 import traceback
 import daemon
+import string
 
 listen_port = 10001
 listen_ip = "127.0.0.1"
@@ -50,13 +51,19 @@ def set_judge_result(judge, result, description = ''):
     judge.result_detail = description
     judge.save()
 
-def strict_equal(judge, testcase, output):
+def strict_compare(judge, testcase, output):
     return testcase.outputdata == output
 
-def loose_equal(judge, testcase, output):
-    return False
+def ignorewhite_compare(judge, testcase, output):
+    standard = testcase.outputdata
+    for c in string.whitespace:
+        standard = standard.replace(c, '')
+        output = output.replace(c, '')
 
-def special_judge(judge, testcase, output):
+    return standard == output
+
+
+def special_compare(judge, testcase, output):
     return False
 
 def signal_message(signalno):
@@ -69,9 +76,9 @@ def signal_message(signalno):
     return 'unknown signal %d raised' % signalno
 
 def test_judge(judge):
-    set_judge_result(judge, 'TESTING')
+  set_judge_result(judge, 'TESTING')
 
-#  try:
+  try:
     basename = 'judge_%s' % judge.id
 
     base_filename = '%s%s'%(tmp_dir, basename)
@@ -185,27 +192,31 @@ def test_judge(judge):
             output_file = open(output_filename, 'r')
             output = output_file.read()
             if judge.problem.judgerule == 'STRICT':
-                if not strict_equal(judge, testcase, output):
-                    set_judge_result(judge, 'WA')
+                if not strict_compare(judge, testcase, output):
+                    set_judge_result(judge, 'WA', testcase.id)
                     output_file.close()
                     return
             elif judge.problem.judgerule == 'SPECIAL':
-                if not loose_equal(judge, testcase,  output):
-		    set_judge_result(judge, 'WA')
+                if not special_compare(judge, testcase,  output):
+		    set_judge_result(judge, 'WA', testcase.id)
+                    output_file.close()
                     return
             elif judge.problem.judgerule == 'IGNOREWHITE':
-                if not special_judge(judge, testcase, output):
-		    set_judge_result(judge, 'WA')
+                if not ignorewhite_compare(judge, testcase, output):
+		    set_judge_result(judge, 'WA', testcase.id)
+                    output_file.close()
                     return
             else:
                 set_judge_result(judge, 'JE', 'unknown judge rule')
+                output_file.close()
                 return
+            output_file.close()
 
     set_judge_result(judge, 'AC')
     output_file.close()
-#  except Exception,e:
-#    set_judge_result(judge, 'JE', str(e)  )
-#    raise e
+  except Exception,e:
+    set_judge_result(judge, 'JE', str(e)  )
+    syslog.syslog(str(e))    
     
 def check_judges():
     while 1:

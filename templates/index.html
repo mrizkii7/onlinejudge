@@ -1,10 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2>Change Log:</h2>
+<table border = '1'>
+  <tr>
+    <td>fix bug:显示源代码时没有对尖括号做转义处理</td>
+  </tr>
+  <tr>
+    <td>fix bug:运行时错误只有错误代号，没有错误信息。现在大部分常见signal可以显示。</td>
+  </tr>
+  <tr>
+    <td>new:python语言判题</td>
+  </tr>
+  <tr>
+    <td>fix:中文显示问题</td>
+  </tr>
+  <tr>
+    <td>fix:随机出现的MLE。读取proc文件系统中的进程信息的时候一个解析错误。</td>
+  </tr>
+
+</table>
 
 <h2>Todo List:</h2>
 
 <table border = '1'>
+  <tr>
+    <td>分页显示判题结果</td>
+  </tr>
   <tr>
     <td>更智能的结果比对</td>
   </tr>
@@ -15,13 +37,7 @@
     <td>比赛</td>
   </tr>
   <tr>
-    <td>java, python等其他语言判题</td>
-  </tr>
-  <tr>
-    <td>bug:随机出现的MLE</td>
-  </tr>
-  <tr>
-    <td>bug:显示源代码时没有对尖括号做转义处理(fixed)</td>
+    <td>java等其他语言判题</td>
   </tr>
   <tr>
     <td>特殊判题</td>
@@ -30,15 +46,8 @@
     <td>bug:用户答对题目列表中有重复项</td>
   </tr>
   <tr>
-    <td>运行时错误只有错误代号，没有错误信息(partially fixed)</td>
-  </tr>
-  <tr>
     <td>security problems:( i don't know how to fix</td>
   </tr>
-  <tr>
-    <td>中文题目显示问题(fixed)</td>
-  </tr>
-
 </table>
 
 {% endblock %}

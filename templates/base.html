@@ -16,19 +16,20 @@
 	<table border = "1">
 	  <tr>
 	    <td>Current User: {% if user.is_anonymous  %} Not Logged in {% else %}{{ user }} {% endif %}</td>
-	    <td><a href="/users/login/">Login</a></td>
-	    <td><a href="/users/logout/">Logout</a></td>
-	    <td><a href="/users/register/">Register</a></td>
+	    <td><a href="/oj/users/login/">Login</a></td>
+	    <td><a href="/oj/users/logout/">Logout</a></td>
+	    <td><a href="/oj/users/changepassword/">Change Password</a></td>
+<!--	    <td><a href="/oj/users/register/">Register</a></td> -->
 	  </tr>
 	</table>
 	<table border = "1">
 	  <tr>
-	    <td><a href="/">Home</td>
-	    <td><a href="/users/">Users</a></td>
-	    <td><a href="/volume/">ProblemsVolumes</a></td>
-	    <td><a href="/judge/">JudgeList</a></td>
-	    <td><a href="/contest/">Contest</a></td>
-	    <td><a href="/admin/">Administrator</a></td>
+	    <td><a href="/oj/">Home</td>
+	    <td><a href="/oj/users/">Users</a></td>
+	    <td><a href="/oj/volume/">Problems</a></td>
+	    <td><a href="/oj/judge/">Judges</a></td>
+<!--	    <td><a href="/oj/contest/">Contest</a></td> -->
+	    <td><a href="/oj/admin/">Administrator</a></td>
 	  </tr>
 	</table>
 	{% endblock %}
@@ -42,8 +43,7 @@
 
       <div id="footer">
         <p>Powered by <a href="http://www.djangoproject.com/">Django</a> | Powered by <a href="http://www.python.org/">Python</a> | 
-&copy; 2006 <a href="http://czk.8866.org/">czk</a> | <a 
-href="/images/judger.py">source code of judger</a></p>
+&copy; 2006 <a href="http://czk.8866.org/">czk</a> </p>
       </div>
     </body>
 </html>

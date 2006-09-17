@@ -1,1 +1,17 @@
-# Create your views here.
+from django.shortcuts import render_to_response
+import django.contrib.auth as auth
+from oj.volume.models import ProblemVolume
+from oj.userprofile.views import  userpermitvolume
+
+def volume_list(request):
+    volume = ProblemVolume.objects.all()
+    return render_to_response('volume/problemvolume_list.html', {'object_list':volume, 'user':request.user})
+
+def volume_detail(request, object_id):
+    volume = ProblemVolume.objects.get(id__exact = object_id)
+    if userpermitvolume(request.user, volume):
+        return render_to_response('volume/problemvolume_detail.html', {'user':request.user, 'object':volume})
+    else:
+        errors = {'Permission not allowed':''}
+        return render_to_response('errors.html', {'errors':errors})
+

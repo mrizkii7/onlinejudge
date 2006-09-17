@@ -11,8 +11,12 @@ User detail - {{object.id}} {{object.username}}
     <td>User Id</td><td> {{object.id}}</td>
   </tr>
   <tr>
-    <td>Name</td><td> {{object.username}}</td>
+    <td>Userame</td><td> {{object.username}}</td>
   </tr>
+  <tr>
+    <td>Real Name</td><td> {{object.first_name}}</td>
+  </tr>
+
   <tr>
     <td>Last Login</td><td>{{object.last_login}}</td>
   </tr>
@@ -29,7 +33,7 @@ User detail - {{object.id}} {{object.username}}
     <td>Accept Problems</td>
     <td>
       {% for judge in accepted %}
-      <a href="/problem/{{judge.problem.problemid}}/">{{judge.problem.problemid}}</a> 
+      <a href="/oj/problem/{{judge.problem.problemid}}/">{{judge.problem.problemid}}</a> 
       {% endfor %}
     </td>
   </tr>

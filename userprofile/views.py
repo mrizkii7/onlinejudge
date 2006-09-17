@@ -27,6 +27,18 @@ def logout(request):
 
     return render_to_response('userprofile/logout.html',{'message':message,'user':request.user})
 
+def changepassword(request):
+    if request.user is not None:
+        if request.POST:
+            if request.POST['password1'] == request.POST['password2']:
+                request.user.set_password(request.POST['password1'])
+                request.user.save()
+                return render_to_response('userprofile/logincheck.html', {'success':True,'user':request.user})
+            else:
+                return render_to_response('userprofile/logincheck.html', {'success':False,'user':request.user})
+        else:
+            return render_to_response('userprofile/changepassword.html', {'user':request.user})
+
 def userdetail(request, user_id):
     user = auth.models.User.objects.get(id__exact = user_id)
     judges = Judge.objects.filter(user__exact = user)
@@ -54,7 +66,7 @@ def userpermitproblem(user, problem):
 def userpermitvolume(user, volume):
     if user.is_anonymous():
         return False
-    if problem in volume.problem.all():
+    for problem in volume.problem.all():
         for group in user.groups.all():
             if group in volume.permittedgroups.all():
                 return True
