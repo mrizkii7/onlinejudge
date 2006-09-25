@@ -18,7 +18,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 # Local time zone for this installation. All choices can be found here:
 # http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
-TIME_ZONE = 'CCT'
+TIME_ZONE = 'Asia/Shanghai'
 
 SITE_NAME="czkoj"
 INTERNAL_IPS = ('192.168.0.248', '60.190.72.179', '127.0.0.1')

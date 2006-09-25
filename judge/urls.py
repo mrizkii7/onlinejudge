@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     (r'^(?P<object_id>\d+)/$', 'django.views.generic.list_detail.object_detail',
      {'queryset':Judge.objects.all()}),
 
+    (r'^(?P<object_id>\d+)/print/$', 'oj.judge.views.judge_print'),
 
 )
 

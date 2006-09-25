@@ -10,25 +10,30 @@ Judge detail - {{object.id}}
     <td>Judge Id</td><td> {{object.id}}</td>
   </tr>
   <tr>
-    <td>User</td><td><a href="/oj/users/{{object.user.id}}/">{{object.user}}</a></td>
+    <td>User</td><td><a href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}</a></td>
   </tr>
   <tr>
     <td>Problem</td><td><a href="/oj/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
   </tr>
   <tr>
-    <td>Language</td><td> {{object.language}}</td>
+    <td>Language</td><td> {{object.get_language_display}}</td>
   </tr>
   <tr>
     <td>Submit Time</td><td>{{object.submittime}}</td>
   </tr>
   <tr>
-    <td>Result</td><td>{{object.result}}</td>
+    <td>Result</td><td>{{object.result}} {{object.get_result_display}}</td>
   </tr>
   <tr>
     <td>Result_detail</td><td><pre>{{object.result_detail}}</pre></td>
   </tr>
   <tr>
     <td>Souce Code</td><td><pre>{%ifequal user object.user%}{{object.sourcecode|escape}}{% else %}Hidden{% endifequal%}</pre</td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><a href="./print/">Print</a></td>
   </tr>
 </table>
 
