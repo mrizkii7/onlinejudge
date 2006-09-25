@@ -9,7 +9,7 @@ from oj.problem.models import Problem
 LANGUAGE_CHOICES = (
     ('c++', 'C++(GNU C++ 4.1)'),
     ('c', 'C(GNU C 4.1)'),
-    ('python', 'Python (Python 2.3)'),
+    ('python', 'Python (Python 2.4)'),
     ('java', 'Java (GCJ 4.1)'),
 )
 
