@@ -27,7 +27,7 @@
 <h2>解答内容</h2>
  <p>所用编程语言： {{object.get_language_display}}</p>
  <p>源代码</p>
- <pre>{%ifequal user object.user%}{{object.sourcecode|escape}}{% else %}Hidden{% endifequal%}</pre</td>
+ <pre>{{object.sourcecode|escape}}</pre></td>
 
 <h2>判题结果</h2>
     <p>{{object.result}} - {{object.get_result_display}}</p>

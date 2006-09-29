@@ -14,5 +14,5 @@ def volume_detail(request, object_id):
         return render_to_response('volume/problemvolume_detail.html', RequestContext(request, {'object':volume}))
     else:
         errors = {'Permission not allowed':''}
-        return render_to_response('errors.html', {'errors':errors})
+        return render_to_response('errors.html', RequestContext(request, {'errors':errors}))
 
