@@ -51,6 +51,8 @@ def userdetail(request, user_id):
 def userpermitproblem(user, problem):
     if user.is_anonymous():
         return False
+    if user.is_superuser:
+        return True
     volumes = ProblemVolume.objects.all()
     for vol in volumes:
         if problem in vol.problem.all():
@@ -62,6 +64,8 @@ def userpermitproblem(user, problem):
 def userpermitvolume(user, volume):
     if user.is_anonymous():
         return False
+    if user.is_superuser:
+        return True
     for problem in volume.problem.all():
         for group in user.groups.all():
             if group in volume.permittedgroups.all():

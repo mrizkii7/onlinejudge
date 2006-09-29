@@ -39,8 +39,9 @@
         {% block content %} content {% endblock %}
       </div>
 
-      <div id="navigator">
 
+      <div id="navigator">
+{% block navigator %}
 {% if is_paginated %}
 <table border = 1>
 <tr>
@@ -50,6 +51,7 @@
 </tr>
 </table>
 {% endif %}
+{% endblock %}
 
       </div>
 

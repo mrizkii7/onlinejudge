@@ -38,8 +38,7 @@ class Judge(models.Model):
     result_detail = models.TextField('Detail of Result', blank = True)
     
     def __str__(self):
-	return '%6d %10s %10s %8s %15s %5s' % (self.id, self.user, self.problem, 
-self.language, self.submittime, self.result)
+        return '%6d %10s %10s %8s %15s %5s' % (self.id, self.user, self.problem, self.language, self.submittime, self.result)
 
     class Admin:
         list_filter = ('user','submittime','result')
