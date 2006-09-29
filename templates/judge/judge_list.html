@@ -29,3 +29,16 @@
 {% endfor %}
 </table>
 {% endblock %}
+
+
+{% block navigator %}
+{% if is_paginated %}
+<table border = 1>
+<tr>
+   {% if has_previous %} <td><a href="./?{{previous}}">前一页</a></td>  {% endif %}
+   <td>current:{{page}}/{{pages}}</td>
+   {% if has_next %} <td><a href="./?{{next}}">后一页</a></td> {% endif %}
+</tr>
+</table>
+{% endif %}
+{% endblock %}

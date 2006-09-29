@@ -61,11 +61,3 @@ def problemsubmit(request, problemid):
         form = forms.FormWrapper(manipulator, new_data, errors)
         return render_to_response('problem/problemsubmit.html', {'problem':problem, 'form': form, 'user':request.user})
 
-def problemstatus(request, problemid):
-    problem = Problem.objects.get(problemid__exact = problemid)
-    if not userpermitproblem(request.user, problem):
-        errors = {'Permission not allowed':''}
-        return render_to_response('errors.html', {'errors':errors})
-
-    judges = Judge.objects.filter(problem__exact = problem)
-    return render_to_response('problem/problemstatus.html', {'problem':problem, 'judge_list':judges, 'user':request.user})
