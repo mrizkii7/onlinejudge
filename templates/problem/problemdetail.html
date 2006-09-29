@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-Problem detail - {{object.id}} {{object.title}} 
+题目详述 - {{object.id}} {{object.title}} 
 {% endblock %}
 
 {% block content %}
@@ -9,48 +9,48 @@ Problem detail - {{object.id}} {{object.title}}
 
 <table>
   <tr>
-    <td>Problem Id</td><td> {{object.problemid}}</td>
+    <td>题目编号</td><td> {{object.problemid}}</td>
   </tr>
   <tr>
-    <td>Time Limit</td><td> {{object.timelimit}} ms</td>
+    <td>时间限制</td><td> {{object.timelimit}} 毫秒</td>
   </tr>
   <tr>
-    <td>Memory Limit</td><td>{{object.memorylimit}} KByte</td>
+    <td>内存限制</td><td>{{object.memorylimit}} K字节</td>
   </tr>
 </table>
 
-<h2>Description</h2>
+<h2>问题描述</h2>
 <pre>
 {{object.description}} 
 </pre>
 
-<h2>Input</h2>
+<h2>输入</h2>
 <pre>
 {{object.input}}
 </pre>
 
-<h2>Output</h2>
+<h2>输出</h2>
 <pre>
 {{object.output}}
 </pre>
 
-<h2>Sample Input</h2>
+<h2>输入样例</h2>
 <pre>
 {{object.sampleinput}}
 </pre>
 
-<h2>Sample Output</h2>
+<h2>输出样例</h2>
 <pre>
 {{object.sampleoutput}}
 </pre>
 
 {% if object.hint %}
-<h2>Hint</h2>
+<h2>提示</h2>
 {{object.hint}}
 {% endif %}
 
 {% if object.origin %}
-<h2>Origin</h2>
+<h2>出处</h2>
 {{object.origin}}
 {% endif %}
 
@@ -58,10 +58,10 @@ Problem detail - {{object.id}} {{object.title}}
 <table>
   <tr>
     <td>
-      <a href="/oj/problem/{{object.problemid}}/submit/">Submit</a>
+      <a href="/oj/problem/{{object.problemid}}/submit/">提交</a>
     </td>
     <td>
-      <a href="/oj/problem/{{object.problemid}}/status/">Status</a>
+      <a href="/oj/problem/{{object.problemid}}/status/">状态</a>
     </td>
   </tr>
 </table>

@@ -15,21 +15,21 @@
 	{% block header %}
 	<table border = "1">
 	  <tr>
-	    <td>Current User: {% if user.is_anonymous  %} Not Logged in {% else %}{{ user }} {% endif %}</td>
-	    <td><a href="/oj/users/login/">Login</a></td>
-	    <td><a href="/oj/users/logout/">Logout</a></td>
-	    <td><a href="/oj/users/changepassword/">Change Password</a></td>
-<!--	    <td><a href="/oj/users/register/">Register</a></td> -->
+	    <td>当前用户: {% if user.is_anonymous  %} 未登录 {% else %}{{ user }} {% endif %}</td>
+	    <td><a href="/oj/users/login/">登录</a></td>
+	    <td><a href="/oj/users/logout/">注销</a></td>
+	    <td><a href="/oj/users/changepassword/">修改密码</a></td>
+<!--	    <td><a href="/oj/users/register/">注册</a></td> -->
 	  </tr>
 	</table>
 	<table border = "1">
 	  <tr>
-	    <td><a href="/oj/">Home</td>
-	    <td><a href="/oj/users/">Users</a></td>
-	    <td><a href="/oj/volume/">Problems</a></td>
-	    <td><a href="/oj/judge/">Judges</a></td>
-<!--	    <td><a href="/oj/contest/">Contest</a></td> -->
-	    <td><a href="/oj/admin/">Administrator</a></td>
+	    <td><a href="/oj/">首页</td>
+	    <td><a href="/oj/users/">用户</a></td>
+	    <td><a href="/oj/volume/">题目</a></td>
+	    <td><a href="/oj/judge/">判题</a></td>
+<!--	    <td><a href="/oj/contest/">比赛</a></td> -->
+	    <td><a href="/oj/admin/">管理</a></td>
 	  </tr>
 	</table>
 	{% endblock %}
@@ -44,9 +44,9 @@
 {% if is_paginated %}
 <table border = 1>
 <tr>
-   {% if has_previous %} <td><a href="./?page={{previous}}">previous</a></td>  {% endif %}
+   {% if has_previous %} <td><a href="./?page={{previous}}">前一页</a></td>  {% endif %}
    <td>current:{{page}}/{{pages}}</td>
-   {% if has_next %} <td><a href="./?page={{next}}">next</a></td> {% endif %}
+   {% if has_next %} <td><a href="./?page={{next}}">后一页</a></td> {% endif %}
 </tr>
 </table>
 {% endif %}

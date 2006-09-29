@@ -2,26 +2,28 @@
 
 {% block content%}
 
-<h2>Judge List</h2>
+<h2>判题结果</h2>
 
 <table border = 1>
 <tr>
-	<td>judge id</td>
-	<td>user</td>
-	<td>problem</td>
-	<td>language</td>
-	<td>judge result</td>
-	<td>submit time</td>
+	<td>判题编号</td>
+	<td>用户</td>
+	<td>问题</td>
+	<td>语言</td>
+	<td>判题结果</td>
+	<td>提交时间</td>
 </tr>
 {% for judge in object_list %}
 
 <tr>
    <td><a href="/oj/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.user}} </a> </td>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.problem}} </a> </td>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.language}} </a> </td>
+   <td><a href="/oj/users/{{judge.user.id}}/"> {{judge.user}} </a> </td>
+   <td><a href="/oj/problem/{{judge.problem.id}}/"> {{judge.problem}} 
+</a> 
+</td>
+   <td> {{judge.language}} </td>
    <td><a href="/oj/judge/{{judge.id}}/"> {{judge.result}} </a> </td>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.submittime}} </a> </td>
+   <td> {{judge.submittime}} </td>
 </tr>
 
 {% endfor %}
