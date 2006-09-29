@@ -1,39 +1,45 @@
 {% extends "base.html" %}
 {% block title %}
-Judge detail - {{object.id}}
+判题详细结果 - {{object.id}}
 {% endblock %}
 
 {% block content %}
 
 <table border = '1'>
   <tr>
-    <td>Judge Id</td><td> {{object.id}}</td>
+    <td>判题编号</td><td> {{object.id}}</td>
   </tr>
   <tr>
-    <td>User</td><td><a href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}</a></td>
+    <td>用户</td><td><a 
+href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}</a></td>
   </tr>
   <tr>
-    <td>Problem</td><td><a href="/oj/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
+    <td>问题</td><td><a 
+href="/oj/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
   </tr>
   <tr>
-    <td>Language</td><td> {{object.get_language_display}}</td>
+    <td>语言</td><td> {{object.get_language_display}}</td>
   </tr>
   <tr>
-    <td>Submit Time</td><td>{{object.submittime}}</td>
+    <td>提交时间</td><td>{{object.submittime}}</td>
   </tr>
   <tr>
-    <td>Result</td><td>{{object.result}} {{object.get_result_display}}</td>
+    <td>结果</td><td>{{object.result}} 
+{{object.get_result_display}}</td>
   </tr>
   <tr>
-    <td>Result_detail</td><td><pre>{{object.result_detail}}</pre></td>
+    
+<td>详细结果</td><td><pre>{{object.result_detail}}</pre></td>
   </tr>
   <tr>
-    <td>Souce Code</td><td><pre>{%ifequal user object.user%}{{object.sourcecode|escape}}{% else %}Hidden{% endifequal%}</pre</td>
+    <td>源代码</td>
+    <td><pre>{%ifequal user object.user%}{{object.sourcecode|escape}}{% else %}{% if user.is_superuser %}{{ object.sourcecode|escape }} {% else %} 无权查看 {% endif %} {% endifequal%}</pre>
+    </td>
   </tr>
 </table>
 <table>
   <tr>
-    <td><a href="./print/">Print</a></td>
+    <td><a href="./print/">打印</a></td>
   </tr>
 </table>
 

@@ -79,6 +79,11 @@ def test_judge(judge):
   set_judge_result(judge, 'TESTING')
 
   try:
+    try:
+        os.mkdir(tmp_dir)
+    except:
+        pass
+
     basename = 'judge_%s' % judge.id
 
     base_filename = '%s%s'%(tmp_dir, basename)
@@ -192,8 +197,12 @@ def test_judge(judge):
             output_file = open(output_filename, 'r')
             output = output_file.read()
             if judge.problem.judgerule == 'STRICT':
-                if not strict_compare(judge, testcase, output):
+                if not ignorewhite_compare(judge, testcase, output):
                     set_judge_result(judge, 'WA', testcase.id)
+                    output_file.close()
+                    return
+                elif not strict_compare(judge, testcase, output):
+                    set_judge_result(judge, 'PE', testcase.id)
                     output_file.close()
                     return
             elif judge.problem.judgerule == 'SPECIAL':
