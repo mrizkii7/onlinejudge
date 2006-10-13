@@ -7,10 +7,10 @@ from oj.problem.models import Problem
 # Create your models here.
 
 LANGUAGE_CHOICES = (
-    ('c++', 'C++(GNU C++ 4.1)'),
-    ('c', 'C(GNU C 4.1)'),
+    ('c++', 'C++(GNU C++ 4.0)'),
+    ('c', 'C(GNU C 4.0)'),
     ('python', 'Python (Python 2.4)'),
-    ('java', 'Java (GCJ 4.1)'),
+    ('java', 'Java (Not supported yet)'),
 )
 
 RESULT_CHOICES = (

@@ -14,5 +14,7 @@ urlpatterns = patterns('',
 
     (r'^(?P<object_id>\d+)/print/$', 'oj.judge.views.judge_print'),
 
+    (r'^(?P<object_id>\d+)/rejudge/$', 'oj.judge.views.judge_rejudge'),
+
 )
 

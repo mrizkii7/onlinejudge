@@ -100,7 +100,7 @@ def test_judge(judge):
     log_filename = base_filename + '.log'
     if judge.language == 'c++':
         exe_filename = base_filename + '.exe'
-        compile_command = 'g++ %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
+        compile_command = 'g++-4.0 %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
             logfile = open(log_filename)
             set_judge_result(judge, 'CE', logfile.read())
@@ -108,7 +108,7 @@ def test_judge(judge):
             return
     elif judge.language == 'c':
         exe_filename = base_filename + '.exe'
-        compile_command = 'gcc %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
+        compile_command = 'gcc-4.0 %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
            logfile = open(log_filename)
            set_judge_result(judge, 'CE', logfile.read())
