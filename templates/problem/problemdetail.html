@@ -9,7 +9,7 @@
 
 <table>
   <tr>
-    <td>题目编号</td><td> {{object.problemid}}</td>
+    <td>题目编号</td><td> {{object.id}}</td>
   </tr>
   <tr>
     <td>时间限制</td><td> {{object.timelimit}} 毫秒</td>
@@ -58,10 +58,10 @@
 <table>
   <tr>
     <td>
-      <a href="/oj/problem/{{object.problemid}}/submit/">提交</a>
+      <a href="/oj/problem/{{object.id}}/submit/">提交</a>
     </td>
     <td>
-      <a href="/oj/judge/?problem={{object.problemid}}">状态</a>
+      <a href="/oj/judge/?problem={{object.id}}">状态</a>
     </td>
   </tr>
 </table>

@@ -14,8 +14,7 @@
 href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}</a></td>
   </tr>
   <tr>
-    <td>问题</td><td><a 
-href="/oj/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
+    <td>问题</td><td><a href="/oj/problem/{{object.problem.id}}/">{{object.problem}}</a></td>
   </tr>
   <tr>
     <td>语言</td><td> {{object.get_language_display}}</td>
@@ -40,6 +39,7 @@ href="/oj/problem/{{object.problem.problemid}}/">{{object.problem}}</a></td>
 <table>
   <tr>
     <td><a href="./print/">打印</a></td>
+    {% if user.is_superuser %}  <td><a href="./rejudge/">重新判断</a></td> {% endif %}
   </tr>
 </table>
 

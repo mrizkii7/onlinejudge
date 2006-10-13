@@ -11,7 +11,7 @@ JUDGERULE_CHOICES = (
 )
 
 class Problem(models.Model):
-    problemid = models.PositiveIntegerField('Problem ID', unique=True)
+#    problemid = models.PositiveIntegerField('Problem ID', unique=True)
     title = models.CharField('Title', maxlength=256)
     description = models.TextField('Description')
     input = models.TextField('Input')
@@ -26,13 +26,13 @@ class Problem(models.Model):
     specialjudge = models.TextField('Special Judge Program', blank = True)
 
     def __str__(self):
-	return "%s %s"%(self.problemid, self.title)
+	return "%s %s"%(self.id, self.title)
 
     class Admin:
 	pass
 
     class Meta:
-	ordering = ['problemid']
+	ordering = ['id']
 	verbose_name = 'Problem'
 
 class ProblemImage(models.Model):

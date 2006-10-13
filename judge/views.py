@@ -16,6 +16,16 @@ def judge_print(request, object_id):
         return render_to_response('errors.html', {'errors':errors})
     return render_to_response('judge/judge_print.html', RequestContext(request, {'object':judge}))
 
+def judge_rejudge(request, object_id):
+    judge = Judge.objects.get(id__exact = object_id)
+    if not request.user.is_superuser and judge.user != request.user:
+        errors = {'Permission not allowed, please log in as the author':''}
+        return render_to_response('errors.html', {'errors':errors})
+    judge.result = "WAIT"
+    judge.save()
+    return HttpResponseRedirect('/oj/judge/%s/' %object_id)
+#    return render_to_response('judge/judge_detail.html', RequestContext(request, {'object': judge}))
+
 def judge_filter(request):
     page = int(request.GET.get('page', '1'))
     user = request.GET.get('user')

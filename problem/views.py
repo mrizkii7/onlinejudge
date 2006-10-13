@@ -13,7 +13,7 @@ import socket
 import datetime
 
 def problemdetail(request, problemid):
-    problem = Problem.objects.get(problemid__exact = problemid)
+    problem = Problem.objects.get(id__exact = problemid)
     if not userpermitproblem(request.user, problem):
         errors = {'Permission not allowed':''}
         return render_to_response('errors.html',{'errors':errors})
@@ -32,7 +32,7 @@ def notify_judger():
 def problemsubmit(request, problemid):
     manipulator = Judge.AddManipulator()
     user = request.user
-    problem = Problem.objects.get(problemid__exact = problemid)
+    problem = Problem.objects.get(id__exact = problemid)
     if not userpermitproblem(user, problem):
         errors = {'Permission not allowed':''}
         return render_to_response('errors.html', RequestContext(request, {'errors':errors}))
@@ -60,7 +60,7 @@ def problemsubmit(request, problemid):
     else:
         errors = {}
         new_data = {'language':'c++'}
-        problem = Problem.objects.get(problemid__exact=problemid)
+        problem = Problem.objects.get(id__exact=problemid)
         form = forms.FormWrapper(manipulator, new_data, errors)
         return render_to_response('problem/problemsubmit.html', RequestContext(request, {'problem':problem, 'form': form}))
 
