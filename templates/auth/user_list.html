@@ -8,15 +8,20 @@
   <td>用户编号</td>
   <td>用户名</td>
   <td>真实姓名</td>
-
+  <td>AC题数</td>
+  <td>AC总数</td>
+  <td>提交</td>
 </tr>
 
 {% for user in object_list %}
 
 <tr>
-   <td><a href="/oj/users/{{user.id}}/"> {{user.id}} </a> </td>
-   <td><a href="/oj/users/{{user.id}}/"> {{user.username}} </a> </td>
-   <td><a href="/oj/users/{{user.id}}/"> {{user.first_name}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.id}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.username}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.first_name}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.accept_problems_counts}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.accept_counts}} </a> </td>
+   <td><a href="/oj/users/{{user.user.id}}/"> {{user.submit_counts}} </a> </td>
 </tr>
 
 {% endfor %}

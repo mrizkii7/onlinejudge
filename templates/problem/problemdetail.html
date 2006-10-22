@@ -46,7 +46,9 @@
 
 {% if object.hint %}
 <h2>提示</h2>
-{{object.hint}}
+<pre>
+{{object.hint|escape}}
+</pre>
 {% endif %}
 
 {% if object.origin %}
