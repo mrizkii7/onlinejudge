@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-用户详细信息 - {{object.id}} {{object.username}} 
+用户详细信息 - {{object.user.id}} {{object.user.username}} 
 {% endblock %}
 
 {% block content %}
@@ -8,29 +8,32 @@
 
 <table border = 1>
   <tr>
-    <td>用户编号</td><td> {{object.id}}</td>
+    <td>用户编号</td><td> {{object.user.id}}</td>
   </tr>
   <tr>
-    <td>用户名</td><td> {{object.username}}</td>
+    <td>用户名</td><td> {{object.user.username}}</td>
   </tr>
   <tr>
-    <td>真实姓名</td><td> {{object.first_name}}</td>
+    <td>真实姓名</td><td> {{object.user.first_name}}</td>
   </tr>
 
   <tr>
-    <td>最后登录时间</td><td>{{object.last_login}}</td>
+    <td>最后登录时间</td><td>{{object.user.last_login}}</td>
   </tr>
   <tr>
-    <td>提交次数</td><td>{{profile.submitcounts}}</td>
+    <td>提交次数</td><td>{{object.submit_counts}}</td>
   </tr>
   <tr>
-    <td>成功提交次数</td><td>{{profile.acceptcounts}}</td>
+    <td>成功提交次数</td><td>{{object.accept_counts}}</td>
+  </tr>
+  <tr>
+    <td>成功提交题数</td><td>{{object.accept_problems_counts}}</td>
   </tr>
   <tr>
     <td>成功提交的题目</td>
     <td>
-      {% for judge in accepted %}
-      <a href="/oj/problem/{{judge.problem.id}}/">{{judge.problem.id}}</a> 
+      {% for problem in object.accept_problems.all %}
+      <a href="/oj/problem/{{problem.id}}/">{{problem.id}}</a> 
       {% endfor %}
     </td>
   </tr>
@@ -38,7 +41,7 @@
 <hr/>
 <table>
   <tr>
-    <td><a href='/oj/judge/?user={{object.id}}'>状态</a></td>
+    <td><a href='/oj/judge/?user={{object.user.id}}'>判题结果</a></td>
   </tr>
 </table
 

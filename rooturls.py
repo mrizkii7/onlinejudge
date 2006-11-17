@@ -18,6 +18,8 @@ urlpatterns = patterns('',
 
     (r'^judge/', include('oj.judge.urls')),
 
+    (r'^contest/', include('oj.contest.urls')),
+
     (r'^images/(?P<path>.*)$', 'django.views.static.serve',
      {'document_root': settings.STATIC_PATH}),
 

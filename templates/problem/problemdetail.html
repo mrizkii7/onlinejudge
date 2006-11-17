@@ -5,12 +5,9 @@
 
 {% block content %}
 
-<h2> {{object.title}} </h2>
+<h2>{{object.id}} - {{object.title}} </h2>
 
 <table>
-  <tr>
-    <td>题目编号</td><td> {{object.id}}</td>
-  </tr>
   <tr>
     <td>时间限制</td><td> {{object.timelimit}} 毫秒</td>
   </tr>
@@ -20,19 +17,20 @@
 </table>
 
 <h2>问题描述</h2>
-<pre>
 {{object.description}} 
-</pre>
+
+<table>
+{% for image in images%}
+   <tr><td>附图{{forloop.counter}}:</td></tr>
+   <tr><td><img src='{{image.get_image_url}}' /></td></tr>
+{% endfor %}
+</table>
 
 <h2>输入</h2>
-<pre>
-{{object.input}}
-</pre>
+{{object.input|escape}}
 
 <h2>输出</h2>
-<pre>
-{{object.output}}
-</pre>
+{{object.output|escape}}
 
 <h2>输入样例</h2>
 <pre>
@@ -63,9 +61,12 @@
       <a href="/oj/problem/{{object.id}}/submit/">提交</a>
     </td>
     <td>
-      <a href="/oj/judge/?problem={{object.id}}">状态</a>
+      <a href="/oj/judge/?problem={{object.id}}">判题结果</a>
     </td>
-  </tr>
+    <td>
+      <a href="/mywiki/oj/{{object.id}}">讨论</a>
+    </td>
+</tr>
 </table>
 
 {% endblock %}

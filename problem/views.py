@@ -3,7 +3,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from oj.judge.models import Judge
-from oj.problem.models import Problem
+from oj.problem.models import Problem,ProblemImage
 from oj.volume.models import ProblemVolume
 from oj.userprofile.views import userpermitproblem
 from django import forms
@@ -14,10 +14,12 @@ import datetime
 
 def problemdetail(request, problemid):
     problem = Problem.objects.get(id__exact = problemid)
+    images = ProblemImage.objects.filter(problem__exact = problem)
+
     if not userpermitproblem(request.user, problem):
         errors = {'Permission not allowed':''}
         return render_to_response('errors.html',{'errors':errors})
-    return render_to_response('problem/problemdetail.html', RequestContext(request, {'object':problem}))
+    return render_to_response('problem/problemdetail.html', RequestContext(request, {'object':problem, 'images':images}))
 
 def notify_judger():
     try:
@@ -56,6 +58,8 @@ def problemsubmit(request, problemid):
             manipulator.do_html2python(new_data)
             manipulator.save(new_data)
             notify_judger()
+	    user.get_profile().submit_counts +=1
+	    user.get_profile().save()
             return render_to_response('problem/problemsubmitresult.html', RequestContext(request, {}))
     else:
         errors = {}
