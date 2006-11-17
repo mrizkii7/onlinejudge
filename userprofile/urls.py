@@ -9,12 +9,10 @@ urlpatterns = patterns('',
     (r'^logincheck/$', 'oj.userprofile.views.logincheck'),
     (r'^logout/$', 'oj.userprofile.views.logout'),
 
-    (r'^$', 'django.views.generic.list_detail.object_list',
-     {'queryset':User.objects.all(), 'paginate_by':20, 'allow_empty':True }),
 
-#    (r'^(?P<object_id>\d+)/$', 'django.views.generic.list_detail.object_detail', {'queryset':User.objects.all()}),
-
+    (r'^$', 'oj.userprofile.views.userlist'),
 
     (r'^(?P<user_id>\d+)/$','oj.userprofile.views.userdetail'),
 
+    (r'^regenerate/$', 'oj.userprofile.views.regenerate'),
 )

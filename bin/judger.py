@@ -222,6 +222,12 @@ def test_judge(judge):
             output_file.close()
 
     set_judge_result(judge, 'AC')
+    judge.user.get_profile().accept_counts += 1
+    if not judge.problem in judge.user.get_profile().accept_problems.all():
+        judge.user.get_profile().accept_problems.add(judge.problem)
+	judge.user.get_profile().accept_problems_counts +=1
+
+    judge.user.get_profile().save()
     output_file.close()
   except Exception,e:
     set_judge_result(judge, 'JE', str(e)  )
@@ -234,6 +240,8 @@ def check_judges():
         for judge in oj.judge.models.Judge.objects.filter(result__exact = 'WAIT'):
             threading.Thread(target=test_judge, args=(judge,)).start()
             #syslog.syslog("new thread started")
+	for judge in oj.judge.models.Judge.objects.filter(result__exact = 'JE'):
+	    threading.Thread(target=test_judge, args=(judge,)).start()
         new_judge.wait()
 
 def init_django():
