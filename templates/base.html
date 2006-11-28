@@ -15,7 +15,7 @@
 	{% block header %}
 	<table border = "1">
 	  <tr>
-	    <td>当前用户: {% if user.is_anonymous  %} 未登录 {% else %}{{ user }} {% endif %}</td>
+	    <td>当前用户: {% if user.is_anonymous  %} 未登录 {% else %}{{ user }} {{ user.first_name }} {% endif %}</td>
 	    <td><a href="/oj/users/login/">登录</a></td>
 	    <td><a href="/oj/users/logout/">注销</a></td>
 	    <td><a href="/oj/users/changepassword/">修改密码</a></td>
