@@ -1,25 +1,6 @@
 #!/usr/bin/python
 #coding=utf-8
 
-LICENSE ='''
-Program Online Judger.
-Copyright (C) 2006  Zhongke Chen
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-'''
-
 import socket
 import syslog
 import os
@@ -37,7 +18,9 @@ listen_ip = "127.0.0.1"
 tmp_dir = "/tmp/judger/"
 clk_tck = float(os.sysconf(os.sysconf_names['SC_CLK_TCK']))
 
-new_judge = threading.Event() #event for new judge coming
+#event for new judge coming
+new_judge = threading.Event() 
+remain_threadings = threading.Semaphore(2)
 
 extname = {
     'c++':'cc',
@@ -76,6 +59,11 @@ def signal_message(signalno):
     return 'unknown signal %d raised' % signalno
 
 def test_judge(judge):
+    test_judge_imp(judge)
+    remain_threadings.release()    
+
+
+def test_judge_imp(judge):
   set_judge_result(judge, 'TESTING')
 
   try:
@@ -152,16 +140,19 @@ def test_judge(judge):
             time_limit_exceeded = False
             memory_limit_exceeded = False
             while 1:
+	        try:
+                    statfile = open('/proc/%d/stat'%pid, 'r')
+                    statstring = statfile.read()
+                    statvalue = statstring.split()[:]
+		    statfile.close()
+		except:
+		    break
+
                 newpid, status = os.waitpid(pid, os.WNOHANG)
                 if newpid != 0:
                     break
-                   
-                statfile = open('/proc/%d/stat'%pid, 'r')
-                statstring = statfile.read()
-                statvalue = statstring.split()[:]
-		statfile.close()
                 
-                time_usage = max(time_usage, int(statvalue[13]) + int(statvalue[14])) #user cputime+system cputime
+		time_usage = max(time_usage, int(statvalue[13]) + int(statvalue[14])) #user cputime+system cputime
                 memory_usage = max(memory_usage, int(statvalue[23])*4096)
                 if time_usage / clk_tck > judge.problem.timelimit / 1000.0:
                     time_limit_exceeded = True
@@ -232,15 +223,17 @@ def test_judge(judge):
   except Exception,e:
     set_judge_result(judge, 'JE', str(e)  )
     syslog.syslog(str(e))    
-    
+
 def check_judges():
     while 1:
         new_judge.clear()
         #syslog.syslog("check judges, thread count:%d" % threading.activeCount())
         for judge in oj.judge.models.Judge.objects.filter(result__exact = 'WAIT'):
+            remain_threadings.acquire()
             threading.Thread(target=test_judge, args=(judge,)).start()
             #syslog.syslog("new thread started")
 	for judge in oj.judge.models.Judge.objects.filter(result__exact = 'JE'):
+	    remain_threadings.acquire()
 	    threading.Thread(target=test_judge, args=(judge,)).start()
         new_judge.wait()
 
