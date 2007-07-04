@@ -2,7 +2,7 @@
 from django.db import models
 
 from django.contrib.auth.models import User
-
+from oj.contest.models import Contest
 from oj.problem.models import Problem
 
 # Create your models here.
@@ -37,7 +37,9 @@ class Judge(models.Model):
     submittime = models.DateTimeField('提交时间')
     result = models.CharField('判题结果', maxlength = 100, blank = True, choices = RESULT_CHOICES)
     result_detail = models.TextField('判题结果详细描述', blank = True)
+    incontest = models.ForeignKey(Contest, verbose_name = '比赛', null = True, blank=True)
     
+
     def __str__(self):
         return '%6d %10s %10s %8s %15s %5s' % (self.id, self.user, self.problem, self.language, self.submittime, self.result)
 

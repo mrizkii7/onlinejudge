@@ -2,8 +2,8 @@
 
 
 {% block content %}
-<h2>题目列表</h2>
-
+<h2>{{object.title}}</h2>
+<p>{{object.description}}</p>
 
 <table border="1">
 <tr>
@@ -21,6 +21,15 @@
 </tr>
 {% endfor %}
 
+</table>
+
+<hr />
+<table>
+  <tr>
+    {% if user.is_superuser %}
+    <td><a href="/oj/volume/{{object.id}}/regenerate/">重新统计</a></td>
+    {% endif %}
+  </tr>
 </table>
 
 {% endblock %}

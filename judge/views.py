@@ -6,15 +6,27 @@ from oj.volume.models import ProblemVolume
 from django import forms
 from django.template import RequestContext
 
-
-
-def judge_print(request, object_id):
+def judge_print_exp(request, object_id):
     judge = Judge.objects.get(id__exact = object_id)
-#    user =  auth.models.User.objects.get(id__exact = judge.user)
-    if not request.user.is_superuser and judge.user != request.user:
+    if request.user.is_anonymous() or ( not request.user.is_superuser and judge.user != request.user):
         errors = {'Permission not allowed, please log in as the author':''}
         return render_to_response('errors.html', {'errors':errors})
-    return render_to_response('judge/judge_print.html', RequestContext(request, {'object':judge}))
+    return render_to_response('judge/judge_print_exp.html', RequestContext(request, {'object':judge}))
+
+def judge_print_ass(request, object_id):
+    judge = Judge.objects.get(id__exact = object_id)
+    if request.user.is_anonymous() or ( not request.user.is_superuser and judge.user != request.user):
+        errors = {'Permission not allowed, please log in as the author':''}
+        return render_to_response('errors.html', {'errors':errors})
+    return render_to_response('judge/judge_print_ass.html', RequestContext(request, {'object':judge}))
+
+def judge_detail(request, object_id):
+    judge = Judge.objects.get(id__exact = object_id)
+    if request.user.is_anonymous() or ( not request.user.is_superuser and judge.user != request.user):
+        errors = {'Permission not allowed, please log in as the author':''}
+        return render_to_response('errors.html', {'errors':errors})
+    return render_to_response('judge/judge_detail.html', RequestContext(request, {'object':judge}))
+
 
 def judge_rejudge(request, object_id):
     judge = Judge.objects.get(id__exact = object_id)
@@ -27,26 +39,22 @@ def judge_rejudge(request, object_id):
 #    return render_to_response('judge/judge_detail.html', RequestContext(request, {'object': judge}))
 
 def judge_filter(request):
+    filter_option = {}
+    option = {}
     page = int(request.GET.get('page', '1'))
-    user = request.GET.get('user')
-    problem = request.GET.get('problem')
-    result = request.GET.get('result')
-    language = request.GET.get('language')
-    alljudges = Judge.objects.filter(user__exact = user, problem__exact = problem, result__exact = result, 
-                   language__exact = language)
+
+    for filter_name in ['user', 'problem', 'result', 'language', 'contest' ]:
+        filter_value = request.GET.get(filter_name)
+	if filter_value:
+	    filter_option[filter_name+'__exact'] = filter_value
+	    option[filter_name] = filter_value
+
+
+    alljudges = Judge.objects.filter(**filter_option)
     pages = (alljudges.count()-1)/20+1
     judges = alljudges[20*(page-1):20*page]
 
-    option = []
-    if user:
-        option.append("user=%s" % user)
-    if problem:
-        option.append('problem=%s' % problem)    
-    if result:
-        option.append('result=%s' % result)
-    if language:
-        option.append('language=%s' % language)
-    optionurl = "&".join(option)
+    optionurl = "&".join( ["%s=%s"%(k, v) for (k, v) in option.items()] )
 
     return render_to_response('judge/judge_list.html', RequestContext(request, 
            {'object_list':judges, 'is_paginated':True, 'has_previous':(page > 1), 'has_next':(page<pages), 'page':page, 'pages':pages, 

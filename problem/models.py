@@ -9,7 +9,6 @@ JUDGERULE_CHOICES = (
 )
 
 class Problem(models.Model):
-#    problemid = models.PositiveIntegerField('Problem ID', unique=True)
     title = models.CharField('标题', maxlength=256)
     description = models.TextField('问题描述')
     input = models.TextField('输入')
@@ -23,17 +22,17 @@ class Problem(models.Model):
     judgerule = models.CharField('判题规则', maxlength = 100, choices = JUDGERULE_CHOICES, default='IGNOREWHITE')
     specialjudge = models.TextField('特殊判题程序', blank = True)
 
+    accept_counts = models.PositiveIntegerField('成功提交次数', default = 0)
+    submit_counts = models.PositiveIntegerField('提交次数', default = 0)
+
     def __str__(self):
 	return "%s %s"%(self.id, self.title)
 
-    def accept_counts(self):
-        from oj.judge.models import Judge
-        return Judge.objects.filter(problem__exact = self, result__exact = 'AC').count()
+    #def accept_counts(self):
+    #    return Judge.objects.filter(problem__exact = self, result__exact = 'AC').count()
 
-    def submit_counts(self):
-        from oj.judge.models import Judge
-        return Judge.objects.filter(problem__exact = self).count()
-
+    #def submit_counts(self):
+    #    return Judge.objects.filter(problem__exact = self).count()
 
     class Admin:
 	list_display = ('id', 'title', 'judgerule')
@@ -59,6 +58,13 @@ class ProblemTestData(models.Model):
 
     def __str__(self):
 	return '%s %s' % (self.id, self.problem)
+
+    def save(self):
+        self.inputdata = self.inputdata.replace("\r\n", "\n")
+	self.inputdata = self.inputdata.replace("\r", "\n")
+	self.outputdata = self.outputdata.replace("\r\n", "\n")
+	self.outputdata = self.outputdata.replace("\r", "\n")
+	super(ProblemTestData, self).save()
 
     class Admin:
 	list_display = ('id', 'problem')

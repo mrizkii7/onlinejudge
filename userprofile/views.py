@@ -10,6 +10,8 @@ from oj.volume.models import ProblemVolume
 from oj.userprofile.models import UserProfile
 from django.template import RequestContext
 from oj.problem.models import Problem
+from oj.contest.models import Contest
+from django.contrib.auth.models import AnonymousUser
 
 def login(request):
     return render_to_response('userprofile/login.html', {'user':request.user})
@@ -33,7 +35,7 @@ def logout(request):
     else:
 	message = 'Not Login'
 
-    return render_to_response('userprofile/logout.html',{'message':message,'user':request.user})
+    return render_to_response('userprofile/logout.html',{'message':message,'user':AnonymousUser()})
 
 def changepassword(request):
     if request.user is not None:
@@ -74,22 +76,38 @@ def userpermitproblem(user, problem):
         return True
     volumes = ProblemVolume.objects.all()
     for vol in volumes:
+        if vol.ispublic:
+	    return True
         if problem in vol.problem.all():
             for group in user.groups.all():
                 if group in vol.permittedgroups.all():
                     return True
+    contests = Contest.objects.all()
+    for contest in contests:
+        if problem in contest.problem.all():
+	    for group in user.groups.all():
+	        if group in contest.permittedgroups.all():
+		    return True
     return False
     
 def userpermitvolume(user, volume):
+    if volume.ispublic:
+        return True
     if user.is_anonymous():
         return False
     if user.is_superuser:
         return True
-    for problem in volume.problem.all():
-        for group in user.groups.all():
-            if group in volume.permittedgroups.all():
-                return True
+    for group in user.groups.all():
+        if group in volume.permittedgroups.all():
+            return True
     return False    
 
 def userpermitcontest(user, contest):
-    return True
+    if user.is_anonymous():
+        return False
+    if user.is_superuser:
+        return True
+    for group in user.groups.all():
+        if group in contest.permittedgroups.all():
+	    return True
+    return False

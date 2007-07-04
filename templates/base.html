@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Language" content="zh-cn" />
         <meta name="keywords" content="online judge" />
 
-        <title>{% block title %} Online Judge {% endblock %}</title>
+        <title>{% block title %} Online Judge {% if not user.is_anonymous %} -  {{ user.first_name }} {% endif %} {% endblock %}</title>
 
     </head>
 
@@ -15,11 +15,16 @@
 	{% block header %}
 	<table border = "1">
 	  <tr>
-	    <td>当前用户: {% if user.is_anonymous  %} 未登录 {% else %}{{ user }} {{ user.first_name }} {% endif %}</td>
+	  {% if user.is_anonymous %}
+<!--	    <td><a href="/oj/users/register/">注册</a></td> -->
 	    <td><a href="/oj/users/login/">登录</a></td>
+	  {% else %}
+	    <td>当前用户:<a href="/oj/users/{{user.id}}/"> {{ user }}{{ user.first_name}} </a></td>
+	    <td><a href="/oj/users/login/">重登录</a></td>
 	    <td><a href="/oj/users/logout/">注销</a></td>
 	    <td><a href="/oj/users/changepassword/">修改密码</a></td>
-<!--	    <td><a href="/oj/users/register/">注册</a></td> -->
+            {% if user.is_staff %}<td><a href=/oj/admin/>管理</a></td>{% endif %}
+          {% endif %}
 	  </tr>
 	</table>
 	<table border = "1">
@@ -29,7 +34,6 @@
 	    <td><a href="/oj/volume/">题目</a></td>
 	    <td><a href="/oj/judge/">判题结果</a></td>
 	    <td><a href="/oj/contest/">比赛</a></td>
-	    <td><a href="/oj/admin/">管理</a></td>
 	  </tr>
 	</table>
 	{% endblock %}

@@ -7,12 +7,11 @@ urlpatterns = patterns('',
 
     (r'^$', 'oj.judge.views.judge_filter'),
 
-    (r'^filter/$', 'oj.judge.views.judge_filter'),
+    (r'^(?P<object_id>\d+)/$', 'oj.judge.views.judge_detail'),
 
-    (r'^(?P<object_id>\d+)/$', 'django.views.generic.list_detail.object_detail',
-     {'queryset':Judge.objects.all()}),
+    (r'^(?P<object_id>\d+)/print_ass/$', 'oj.judge.views.judge_print_ass'),
 
-    (r'^(?P<object_id>\d+)/print/$', 'oj.judge.views.judge_print'),
+    (r'^(?P<object_id>\d+)/print_exp/$', 'oj.judge.views.judge_print_exp'),
 
     (r'^(?P<object_id>\d+)/rejudge/$', 'oj.judge.views.judge_rejudge'),
 

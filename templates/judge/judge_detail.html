@@ -35,9 +35,11 @@ href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}<
     </td>
   </tr>
 </table>
+
 <table>
   <tr>
-    <td><a href="./print/">打印</a></td>
+    <td><a href="./print_exp/">实验打印视图</a></td>
+    <td><a href="./print_ass/">作业打印视图</a></td>
     {% if user.is_superuser %}  <td><a href="./rejudge/">重新判断</a></td> {% endif %}
   </tr>
 </table>
