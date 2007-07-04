@@ -63,6 +63,8 @@
     <td>
       <a href="/oj/judge/?problem={{object.id}}">判题结果</a>
     </td>
+    {% if user.is_superuser %}  <td><a href="./rejudge/">重新判断</a></td> {% endif %}
+
     <td>
       <a href="/mywiki/oj/{{object.id}}">讨论</a>
     </td>

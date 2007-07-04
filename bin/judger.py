@@ -13,14 +13,17 @@ import traceback
 import daemon
 import string
 
+max_testing_count = 2
 listen_port = 10001
 listen_ip = "127.0.0.1"
 tmp_dir = "/tmp/judger/"
 clk_tck = float(os.sysconf(os.sysconf_names['SC_CLK_TCK']))
 
-#event for new judge coming
-new_judge = threading.Event() 
-remain_threadings = threading.Semaphore(2)
+new_judge = threading.Event()              #event for new judge coming
+remain_threadings = threading.Semaphore(max_testing_count)
+
+running = True
+timer_thread = None
 
 extname = {
     'c++':'cc',
@@ -28,6 +31,10 @@ extname = {
     'python':'py',
     'java':'java',
 }
+
+def term_handler(num, frame):
+    global running
+    running = False
 
 def set_judge_result(judge, result, description = ''):
     judge.result = result
@@ -88,7 +95,7 @@ def test_judge_imp(judge):
     log_filename = base_filename + '.log'
     if judge.language == 'c++':
         exe_filename = base_filename + '.exe'
-        compile_command = 'g++-4.0 %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
+        compile_command = 'g++ %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
             logfile = open(log_filename)
             set_judge_result(judge, 'CE', logfile.read())
@@ -96,7 +103,7 @@ def test_judge_imp(judge):
             return
     elif judge.language == 'c':
         exe_filename = base_filename + '.exe'
-        compile_command = 'gcc-4.0 %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
+        compile_command = 'gcc %s -o %s -ansi -fno-asm -O2 -Wall -lm --static -DONLINE_JUDGE &>%s' % (source_filename, exe_filename, log_filename)
         if(os.system(compile_command)):
            logfile = open(log_filename)
            set_judge_result(judge, 'CE', logfile.read())
@@ -211,15 +218,20 @@ def test_judge_imp(judge):
                 output_file.close()
                 return
             output_file.close()
-
+    output_file.close()
     set_judge_result(judge, 'AC')
+    
+    #set user profile
     judge.user.get_profile().accept_counts += 1
     if not judge.problem in judge.user.get_profile().accept_problems.all():
         judge.user.get_profile().accept_problems.add(judge.problem)
 	judge.user.get_profile().accept_problems_counts +=1
 
     judge.user.get_profile().save()
-    output_file.close()
+
+    #set problem profile
+    judge.problem.accept_counts += 1
+    judge.problem.save()
   except Exception,e:
     set_judge_result(judge, 'JE', str(e)  )
     syslog.syslog(str(e))    
@@ -250,12 +262,13 @@ def init_django():
 
 def check_interval():
     new_judge.set()
-    threading.Timer(10, check_interval).start()
+    timer_thread = threading.Timer(10, check_interval)
+    timer_thread.start()
 
 
 def main():
     init_django()
-    
+    #signal.signal(signal.SIGTERM, term_handler)
     threading.Thread(target = check_judges).start()
 
     check_interval()
@@ -266,11 +279,14 @@ def main():
     s.listen(10)
 
     #accept a connection and notify check_thread 
-    while 1:
+    while running:
         conn, addr = s.accept()
         new_judge.set()
         conn.send("1")
         conn.close()
+    s.close()
+    if timer_thread:
+        timer_thread.cancel()
 
 if __name__ == '__main__':
     syslog.openlog('onlinejudge')

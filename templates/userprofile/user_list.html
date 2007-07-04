@@ -27,4 +27,13 @@
 {% endfor %}
 </table>
 
+<hr />
+<table>
+  <tr>
+    {% if user.is_superuser %}
+    <td><a href="/oj/users/regenerate/">重新统计</a></td>
+    {% endif %}
+  </tr>
+</table>
+
 {% endblock %}

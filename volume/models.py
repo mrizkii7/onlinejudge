@@ -12,6 +12,7 @@ class ProblemVolume(models.Model):
     description = models.TextField('描述', blank=True, core = True)
     problem = models.ManyToManyField(Problem, blank = True, verbose_name = "问题")
     permittedgroups = models.ManyToManyField(Group, blank = True, verbose_name = "有权限的组")
+    ispublic = models.BooleanField("公开", blank = True, core = True)
 
     def __str__(self):
 	return '%s' % self.title
