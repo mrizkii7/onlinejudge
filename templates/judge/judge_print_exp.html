@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-cn">
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="Content-Language" content="zh-cn" />
+        <meta name="keywords" content="online judge" />
+
+        <title> 实验 - 编号{{object.id}} - 题号{{object.problem.id}}</title>
+
+    </head>
+
+    <body>
+
+<h1> 实验 - 编号{{object.id}} - 题号{{object.problem.id}}</h1>
+
+  <p>注册号：{{object.user.username}} </p>
+  <p>姓名：{{object.user.first_name}}</p>
+  <p>答题时间：{{object.submittime}}</p>
+<h2>问题叙述</h2>
+<p>问题编号：{{ object.problem.id }}</p>
+<p>问题标题：  {{object.problem.title}}</p>
+<h4>问题描述</h4>  {{object.problem.description}}</p>
+<h4>输入要求</h4><p>{{object.problem.input}} </p>
+<h4>输出要求</h4><p>{{object.problem.output}} </p>
+<h4>输入实例</h4><pre>{{object.problem.sampleinput}}</pre>
+<h4>输出实例</h4><pre>{{object.problem.sampleoutput}}</pre>
+<h2>解答内容</h2>
+ <p>所用编程语言： {{object.get_language_display}}</p>
+ <p>源代码</p>
+ <pre>{{object.sourcecode|escape}}</pre></td>
+
+<h2>判题结果</h2>
+    <p>{{object.result}} - {{object.get_result_display}}</p>
+    <p>判题结果补充说明</p>
+       <pre>{{object.result_detail}}</pre>
+    </body>
+</html>
+
+
