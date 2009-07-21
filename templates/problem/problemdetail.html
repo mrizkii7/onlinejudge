@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-题目详述 - {{object.id}} {{object.title}} 
+题目详述 - {{ object.id }} {{object.title}} 
 {% endblock %}
 
 {% block content %}
@@ -22,7 +22,7 @@
 <table>
 {% for image in images%}
    <tr><td>附图{{forloop.counter}}:</td></tr>
-   <tr><td><img src='{{image.get_image_url}}' /></td></tr>
+   <tr><td><img src="/images/{{image.image}}" /></td></tr>
 {% endfor %}
 </table>
 
@@ -58,15 +58,15 @@
 <table>
   <tr>
     <td>
-      <a href="/oj/problem/{{object.id}}/submit/">提交</a>
+      <a href="/problem/{{object.id}}/submit/">提交</a>
     </td>
     <td>
-      <a href="/oj/judge/?problem={{object.id}}">判题结果</a>
+      <a href="/judge/?problem={{object.id}}">判题结果</a>
     </td>
     {% if user.is_superuser %}  <td><a href="./rejudge/">重新判断</a></td> {% endif %}
 
     <td>
-      <a href="/mywiki/oj/{{object.id}}">讨论</a>
+{#      <a href="/mywiki/oj/{{object.id}}">讨论</a> #}
     </td>
 </tr>
 </table>

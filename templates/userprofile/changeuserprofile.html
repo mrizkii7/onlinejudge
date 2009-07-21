@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<form method="post" action="">
+<table>
+
+<tr>
+<td>新密码</td>
+<td><input type="password" name="password1"></td>
+</tr>
+<tr>
+<td>再次输入新密码</td>
+<td><input type="password" name="password2"></td>
+</tr>
+<tr>
+<td>姓名:</td>
+<td><input name="name" type="text"></td>
+</tr>
+<tr></tr>
+<td>班级:</td>
+<td><input name="classes" type="text"></td>
+</tr>
+</table>
+
+<input type="submit" value="提交">
+</form>
+
+{% endblock %}

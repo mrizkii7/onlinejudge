@@ -5,13 +5,21 @@
 
 <table border="1">
 <tr>
-  <td>题集编号</td>
-  <td>题集名称</td>
+	<td>题集编号</td>
+	<td>题集名称</td>
+	<td>公开</td>
 </tr>
 {% for volume in object_list %}
 <tr>
-   <td><a href="/oj/volume/{{volume.id}}/"> {{volume.id}} </a> </td>
-   <td><a href="/oj/volume/{{volume.id}}/"> {{volume.title}} </a> </td>
+	<td><a href="/volume/{{volume.id}}/"> {{volume.id}} </a> </td>
+	<td><a href="/volume/{{volume.id}}/"> {{volume.title}} </a> </td>
+	<td> 
+		{% if volume.ispublic%}
+			是
+		{% else %}
+			否
+		{% endif %}
+	</td>
 </tr>
 {% endfor %}
 

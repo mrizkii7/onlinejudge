@@ -5,23 +5,26 @@
 <h2>用户列表</h2>
 <table border = 1>
 <tr>
-  <td>用户编号</td>
+{#  <td>用户编号</td> #}
   <td>用户名</td>
-  <td>真实姓名</td>
+  <td>姓名</td>
+  <td>班级</td>
   <td>AC题数</td>
   <td>AC总数</td>
   <td>提交</td>
 </tr>
 
-{% for user in object_list %}
+{% for user in userprofiles %}
 
 <tr>
-   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.id}} </a> </td>
-   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.username}} </a> </td>
-   <td><a href="/oj/users/{{user.user.id}}/"> {{user.user.first_name}} </a> </td>
-   <td><a href="/oj/judge/?user={{user.user.id}}&result=AC"> {{user.accept_problems_counts}} </a> </td>
-   <td><a href="/oj/judge/?user={{user.user.id}}&result=AC"> {{user.accept_counts}} </a> </td>
-   <td><a href="/oj/judge/?user={{user.user.id}}"> {{user.submit_counts}} </a> </td>
+{#   <td><a href="/users/{{user.user.id}}/"> {{user.user.id}} </a> </td>  #}
+	<td><a href="/users/{{user.user.id}}/"> {{user.user.username}} </a> </td>
+	<td><a href="/users/{{user.user.id}}/"> {{user.name}} </a> </td>
+	<td><a href="/users/{{user.user.id}}/"> {{user.classes}} </a> </td>
+	<td><a href="/judge/?user={{user.user.id}}&result=AC"> {{user.accept_problems_counts}} </a> </td>
+	<td><a href="/judge/?user={{user.user.id}}&result=AC"> {{user.accept_counts}} </a> </td>
+	<td><a href="/judge/?user={{user.user.id}}"> {{user.submit_counts}} </a> </td>
+
 </tr>
 
 {% endfor %}
@@ -31,7 +34,7 @@
 <table>
   <tr>
     {% if user.is_superuser %}
-    <td><a href="/oj/users/regenerate/">重新统计</a></td>
+    <td><a href="/users/regenerate/">重新统计</a></td>
     {% endif %}
   </tr>
 </table>

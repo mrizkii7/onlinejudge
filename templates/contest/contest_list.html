@@ -9,13 +9,33 @@
   <td>名称</td>
   <td>开始时间</td>
   <td>结束时间</td>
+  <td>公开</td>
+  <td>参加比赛</td>
+  <td>比赛排名</td>
+  <td>比赛提交</td>
 </tr>
-{% for contest in object_list %}
+{% for contest in contests %}
 <tr>
-   <td><a href="/oj/contest/{{contest.id}}/"> {{contest.id}} </a> </td>
-   <td><a href="/oj/contest/{{contest.id}}/"> {{contest.title}} </a> </td>
-   <td>{{contest.start_time}}</td>
-   <td>{{contest.end_time}}</td>
+	<td>{{contest.id}}  </td>
+	<td>{{contest.title}}  </td>
+	<td>{{contest.start_time}}</td>
+	<td>{{contest.end_time}}</td>
+	<td>
+		{% if contest.is_public%}
+			是
+		{% else %}
+			否
+		{% endif %}
+
+	<td><a href="/contest/{{contest.id}}/login"> 参加比赛 </a> </td>
+
+	{% if user.is_superuser or user.is_staff or contest.is_public %}
+		<td><a href="/contest/{{contest.id}}/userlist"> 观看 </a> </td>
+		<td><a href="/contest/{{contest.id}}/judgelist"> 查看 </a> </td>
+	{% else %}
+		<td> 无权观看  </td>
+		<td> 无权查看 </td>
+	{% endif %}
 </tr>
 {% endfor %}
 

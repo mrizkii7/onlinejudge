@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}
+用户详细信息 - {{userprofile.user.username}} {{userprofile.name}} 
+{% endblock %}
+
+{% block content %}
+
+
+<table border = 1>
+  <tr>
+{#    <td>用户编号</td><td> {{object.user.id}}</td> #}
+  </tr>
+  <tr>
+    <td>用户名</td><td> {{userdetail.user.username}}</td>
+  </tr>
+  <tr>
+    <td>真实姓名</td><td> {{userdetail.name}}</td>
+  </tr>
+<tr>
+  <td>班级</td><td> {{userdetail.classes}}</td>
+</tr>
+
+  <tr>
+    <td>最后登录时间</td><td>{{  contestuser.userprofile.user.last_login|date:"Y-m-j,G:i:s" }}</td>
+  </tr>
+  <tr>
+    <td>提交次数</td><td>{{ contestuser.submit_counts }}</td>
+  </tr>
+  <tr>
+    <td>成功提交次数</td><td>{{ contestuser.accept_counts }}</td>
+  </tr>
+  <tr>
+    <td>成功提交题数</td><td>{{  contestuser.accept_problems_counts }}</td>
+  </tr>
+  <tr>
+    <td>成功提交的题目</td>
+    <td>
+      {% for problem in contestuser.accept_problems.all %}
+      <a href="/problem/{{problem.id}}/">{{problem.id}}</a> 
+      {% endfor %}
+    </td>
+  </tr>
+<tr>
+   <td>成功的提交</td>
+   <td>
+     {% for judge in judges %}
+     <a href="/judge/{{judge.id}}/">{{judge.problem.id}}</a> 
+     {% endfor %}
+   </td>
+ </tr>
+</table>
+<hr/>
+<table>
+  <tr>
+    <td><a href='/judge/?user={{user.id}}'>判题结果</a></td>
+  </tr>
+</table
+
+{% endblock %}

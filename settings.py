@@ -1,5 +1,5 @@
 # Django settings for oj project.
-
+#coding=utf-8
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -9,44 +9,46 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'mysql'           # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
-DATABASE_NAME = 'onlinejudge'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'oj'             # Not used with sqlite3.
+DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = '/home/oj/oj/onlinejudge.db'             # Or path to database file if using sqlite3.
+DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-# Local time zone for this installation. All choices can be found here:
-# http://www.postgresql.org/docs/current/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# If running in a Windows environment this must be set to the same as your
+# system time zone.
 TIME_ZONE = 'Asia/Shanghai'
 
-SITE_NAME="czkoj"
-INTERNAL_IPS = ('192.168.0.248', '60.190.72.179', '127.0.0.1')
-SESSION_COOKIE_NAME = 'DJANGO_STAGING_' + SITE_NAME.upper()
-
-
 # Language code for this installation. All choices can be found here:
-# http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
-# http://blogs.law.harvard.edu/tech/stories/storyReader$15
-LANGUAGE_CODE = 'zh-cn'
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'zh-CN'
 
 SITE_ID = 1
 
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/home/oj/oj/media/'
+MEDIA_ROOT = ''
 
-# URL that handles the media served from MEDIA_ROOT.
-# Example: "http://media.lawrence.com"
-MEDIA_URL = '/oj/media/'
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://media.lawrence.com", "http://example.com/media/"
+MEDIA_URL =''
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/oj/adminmedia/'
+ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '-iki4o#d+pbdhj_*-cgk-g!)*+9_(btba4294vvsp^syd7!mma'
+SECRET_KEY = 'g!37kbk-_14a$ni#fa4f8vkk$gwmldu5^&1*4-thgpj-3kw!33'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -59,16 +61,15 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.locale.LocaleMiddleware', 
-    'django.middleware.doc.XViewMiddleware',
 )
 
 ROOT_URLCONF = 'oj.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates".
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
-    '/home/oj/oj/templates'
+    # Don't forget to use absolute paths, not relative paths.
+	"/home/oj/oj/templates",
 )
 
 INSTALLED_APPS = (
@@ -78,13 +79,12 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'oj.problem',
-    'oj.judge',
-    'oj.userprofile',
     'oj.volume',
-    'oj.contest'
+    'oj.judge',
+    'oj.contest',
+    'oj.userprofile',
 )
-
-STATIC_PATH = '/home/oj/oj/images'
+STATIC_PATH = '/home/oj/oj/'
 
 AUTH_PROFILE_MODULE = 'userprofile.UserProfile'
 
@@ -94,4 +94,3 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.request"
 )
-

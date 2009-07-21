@@ -6,22 +6,24 @@
 
 <table border = 1>
 <tr>
-	<td>判题编号</td>
-	<td>用户</td>
-	<td>问题</td>
-	<td>语言</td>
+	<td>判题编号</td> 
+	<td>用 户</td>
+	<td>姓  名</td>
+	<td>问 题</td>
+	<td>语 言</td>
 	<td>判题结果</td>
 	<td>提交时间</td>
 </tr>
 {% for judge in object_list %}
 
 <tr>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
-   <td><a href="/oj/users/{{judge.user.id}}/"> {{judge.user}} {{judge.user.first_name}}</a> </td>
-   <td><a href="/oj/problem/{{judge.problem.id}}/"> {{judge.problem.id}}</a></td>
+  <td><a href="/judge/{{judge.id}}/"> {{judge.id}} </a> </td>
+   <td><a href="/users/{{judge.user.id}}/"> {{judge.user}} {{judge.user.first_name}}</a> </td>
+   <td><a href="/users/{{judge.user.id}}/"> {{judge.user.get_profile.name}} {{judge.user.first_name}}</a> </td>
+   <td><a href="/problem/{{judge.problem.id}}/"> {{judge.problem.id}}</a></td>
    <td> {{judge.language}} </td>
-   <td><a href="/oj/judge/{{judge.id}}/"> {{judge.get_result_display}} </a> </td>
-   <td> {{judge.submittime}} </td>
+   <td><a href="/judge/{{judge.id}}/"> {{judge.get_result_display}} </a> </td>
+   <td> {{judge.submittime|date:"Y-m-j,G:i:s"}} </td>
 </tr>
 
 {% endfor %}

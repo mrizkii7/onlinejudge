@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}注册{% endblock %}
+
+{% block content %}
+  <h1>注册一个新的帐号</h1>
+<form method="post" action="/users/registercheck/">
+<table>
+
+<tr>
+<td>用户名: </td>
+<td><input type="text" name="username"></td>
+</tr>
+
+<tr>
+<td>密码:</td>
+<td><input name="password" type="password"></td>
+</tr>
+
+<tr>
+<td>重复密码:</td>
+<td><input name="password1" type="password"></td>
+</tr>
+
+<tr>
+<td>姓名:</td>
+<td><input name="name" type="text"></td>
+</tr>
+
+<tr>
+<td>班级:</td>
+<td><input name="classes" type="text"></td>
+</tr>
+
+</table>
+<input value="注册" type="submit">
+</form>
+
+{% endblock %}
+
