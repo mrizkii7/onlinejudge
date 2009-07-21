@@ -2,75 +2,69 @@
 from django.db import models
 
 JUDGERULE_CHOICES = (
-    ('STRICT', '严格比较输入输出'),
-    ('SPECIAL', '使用特殊判题程序进行特殊判题'),
-    ('IGNOREWHITE', '忽略所有空白'),
-    ('MANUAL', '手动判题'),
+	('STRICT', u'严格比较输入输出'),
+	('SPECIAL', u'使用特殊判题程序进行特殊判题'),
+	('IGNOREWHITE', u'忽略所有空白'),
+	('MANUAL', u'手动判题'),
 )
 
 class Problem(models.Model):
-    title = models.CharField('标题', maxlength=256)
-    description = models.TextField('问题描述')
-    input = models.TextField('输入')
-    output = models.TextField('输出')
-    sampleinput = models.TextField('输入样例')
-    sampleoutput = models.TextField('输出样例')
-    origin = models.TextField('出处', blank = True)
-    hint = models.TextField('提示', blank = True)
-    memorylimit = models.PositiveIntegerField('内存限制(KB)', default = 32768, blank = True)
-    timelimit = models.PositiveIntegerField('时间限制(ms)', default = 1000, blank = True)
-    judgerule = models.CharField('判题规则', maxlength = 100, choices = JUDGERULE_CHOICES, default='IGNOREWHITE')
-    specialjudge = models.TextField('特殊判题程序', blank = True)
+	title = models.CharField('标题', max_length=256)
+	description = models.TextField('问题描述')
+	input = models.TextField('输入')
+	output = models.TextField('输出')
+	sampleinput = models.TextField('输入样例')
+	sampleoutput = models.TextField('输出样例')
+	origin = models.TextField('出处', default = 'wzu', blank = True)
+	hint = models.TextField('提示',  blank = True)
+	memorylimit = models.PositiveIntegerField('内存限制(KB)', default = 32768, blank = True)
+	timelimit = models.PositiveIntegerField('时间限制(ms)', default = 1000, blank = True)
+	judgerule = models.CharField('判题规则', max_length = 100, choices = JUDGERULE_CHOICES, default='IGNOREWHITE')
+	specialjudge = models.TextField('特殊判题程序', blank = True)
 
-    accept_counts = models.PositiveIntegerField('成功提交次数', default = 0)
-    submit_counts = models.PositiveIntegerField('提交次数', default = 0)
+	accept_counts = models.PositiveIntegerField('成功提交次数', default = 0)
+	submit_counts = models.PositiveIntegerField('提交次数', default = 0)
 
-    def __str__(self):
-	return "%s %s"%(self.id, self.title)
+	def __unicode__(self):
+		return u'%s %s'%(self.id, self.title) 
 
-    #def accept_counts(self):
-    #    return Judge.objects.filter(problem__exact = self, result__exact = 'AC').count()
+	class Admin:
+		list_display = ('id', u'title', u'judgerule')
 
-    #def submit_counts(self):
-    #    return Judge.objects.filter(problem__exact = self).count()
-
-    class Admin:
-	list_display = ('id', 'title', 'judgerule')
-
-    class Meta:
-	ordering = ['id']
-	verbose_name = verbose_name_plural = '问题'
+	class Meta:
+		ordering = ['id']
+		verbose_name = verbose_name_plural = u'问题'
 
 class ProblemImage(models.Model):
-    problem = models.ForeignKey(Problem, verbose_name = '问题')
-    image = models.ImageField('图片', upload_to = 'images', core = True)
+	problem = models.ForeignKey(Problem, verbose_name = u'问题')
+	image = models.ImageField(u'图片', upload_to = 'images')
 
-    class Admin:
-        list_display = ('problem',)
+	class Admin:
+		list_display = (u'problem',)
 
-    class Meta:
-	verbose_name = verbose_name_plural = '图片'
+	class Meta:
+		verbose_name = verbose_name_plural = u'图片'
 
 class ProblemTestData(models.Model):
-    problem = models.ForeignKey(Problem, verbose_name = '问题', edit_inline = True)
-    inputdata = models.TextField('输入数据', core = True)
-    outputdata = models.TextField('输出数据', core = True)
+	problem = models.ForeignKey(Problem, verbose_name = u'问题')
+	inputdata = models.TextField('输入数据')
+	outputdata = models.TextField('输出数据')
 
-    def __str__(self):
-	return '%s %s' % (self.id, self.problem)
+	def __unicode__(self):
+		return u'%s %s' % (self.id, self.problem)
 
-    def save(self):
-        self.inputdata = self.inputdata.replace("\r\n", "\n")
-	self.inputdata = self.inputdata.replace("\r", "\n")
-	self.outputdata = self.outputdata.replace("\r\n", "\n")
-	self.outputdata = self.outputdata.replace("\r", "\n")
-	super(ProblemTestData, self).save()
+	def save(self):
+		self.inputdata = self.inputdata.replace("\r\n", "\n")
+		self.inputdata = self.inputdata.replace("\r", "\n")
+		self.outputdata = self.outputdata.replace("\r\n", "\n")
+		self.outputdata = self.outputdata.replace("\r", "\n")
+		super(ProblemTestData, self).save()
 
-    class Admin:
-	list_display = ('id', 'problem')
-	list_filter = ('problem',)
+	class Admin:
+		list_display = (u'id', u'problem')
+		list_filter = (u'problem',)
 
-    class Meta:
-	verbose_name = verbose_name_plural = '测试数据'
+	class Meta:
+		verbose_name = verbose_name_plural =u'测试数据'
 
 

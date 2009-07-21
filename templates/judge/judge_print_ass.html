@@ -12,11 +12,12 @@
 
     <body>
 
-<h1> 作业 - 编号{{object.id}} - 题号{{object.problem.id}}</h1>
+<h1> 作业 - 编号:{{object.id}} - 题号:{{object.problem.id}}- 标题:{{object.problem.title}}</h1>
 
   <p>注册号：{{object.user.username}} </p>
-  <p>姓名：{{object.user.first_name}}</p>
-  <p>答题时间：{{object.submittime}}</p>
+  <p>姓名：{{userprofile.name}}</p>
+  <p>班级：{{userprofile.classes}}</p>
+  <p>答题时间：{{object.submittime|date:"Y-m-j,G:i:s"}}</p>
 <h2>问题叙述</h2>
 <p>问题编号：{{ object.problem.id }}</p>
 <p>问题标题：  {{object.problem.title}}</p>

@@ -1,37 +1,41 @@
 {% extends "base.html" %}
 {% block title %}
-判题详细结果 - {{object.id}}
+判题详细结果 - {{judge.id}}
 {% endblock %}
 
 {% block content %}
 
 <table border = '1'>
   <tr>
-    <td>判题编号</td><td> {{object.id}}</td>
+    <td>判题编号</td><td> {{judge.id}}</td>
   </tr>
   <tr>
     <td>用户</td><td><a 
-href="/oj/users/{{object.user.id}}/">{{object.user}} {{object.user.first_name}}</a></td>
+href="/users/{{judge.user.id}}/">{{judge.user}} {{judge.user.get_profile.name}}</a></td>
   </tr>
   <tr>
-    <td>问题</td><td><a href="/oj/problem/{{object.problem.id}}/">{{object.problem}}</a></td>
+    <td>问题</td><td><a href="/problem/{{judge.problem.id}}/">{{judge.problem}}</a></td>
   </tr>
   <tr>
-    <td>语言</td><td> {{object.get_language_display}}</td>
+    <td>语言</td><td> {{judge.get_language_display}}</td>
   </tr>
   <tr>
-    <td>提交时间</td><td>{{object.submittime}}</td>
+    <td>提交时间</td><td>{{judge.submittime}}</td>
   </tr>
   <tr>
-    <td>结果</td><td>{{object.get_result_display}}</td>
+    <td>结果</td><td>{{judge.get_result_display}}</td>
   </tr>
+
+<tr>
+  <td>比赛</td><td>{{judge.incontest}}</td>
+</tr>
+
   <tr>
-    
-<td>详细结果</td><td><pre>{{object.result_detail}}</pre></td>
+<td>详细结果</td><td><pre>{{judge.result_detail}}</pre></td>
   </tr>
   <tr>
     <td>源代码</td>
-    <td><pre>{%ifequal user object.user%}{{object.sourcecode|escape}}{% else %}{% if user.is_superuser %}{{ object.sourcecode|escape }} {% else %} 无权查看 {% endif %} {% endifequal%}</pre>
+    <td><pre>{%ifequal user judge.user%}{{judge.sourcecode|escape}}{% else %}{% if user.is_superuser %}{{ judge.sourcecode|escape }} {% else %} 无权查看 {% endif %} {% endifequal%}</pre>
     </td>
   </tr>
 </table>

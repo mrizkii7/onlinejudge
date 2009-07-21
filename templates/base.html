@@ -1,50 +1,60 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-cn">
-    <head>
-        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-        <meta http-equiv="Content-Language" content="zh-cn" />
-        <meta name="keywords" content="online judge" />
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="Content-Language" content="zh-cn" />
+		<meta name="keywords" content="online judge" />
 
-        <title>{% block title %} Online Judge {% if not user.is_anonymous %} -  {{ user.first_name }} {% endif %} {% endblock %}</title>
+		<title>{% block title %} 在线判题系统 {% if not user.is_anonymous %} -  {{ userprofile.name }} {% endif %} {% endblock %}</title>
 
-    </head>
+	</head>
 
-    <body>
-      <div id="header">
+	<body>
+	  <div id="header">
 	{% block header %}
 	<table border = "1">
-	  <tr>
-	  {% if user.is_anonymous %}
-<!--	    <td><a href="/oj/users/register/">注册</a></td> -->
-	    <td><a href="/oj/users/login/">登录</a></td>
-	  {% else %}
-	    <td>当前用户:<a href="/oj/users/{{user.id}}/"> {{ user }}{{ user.first_name}} </a></td>
-	    <td><a href="/oj/users/login/">重登录</a></td>
-	    <td><a href="/oj/users/logout/">注销</a></td>
-	    <td><a href="/oj/users/changepassword/">修改密码</a></td>
-            {% if user.is_staff %}<td><a href=/oj/admin/>管理</a></td>{% endif %}
-          {% endif %}
-	  </tr>
+		<tr>
+			{% if user.is_anonymous %}
+				<td><a href="/users/register/">注册</a></td> 
+				<td><a href="/users/login/">登录</a></td>
+			{% else %}
+			<td>当前用户:<a href="/users/{{user.id}}/"> {{ user }}{{ userprofile.name}} </a></td>
+			<td><a href="/users/login/">重登录</a></td>
+			<td><a href="/users/logout/">注销</a></td>
+			<td><a href="/users/changeuserprofile/">修改资料</a></td>
+			{% if user.is_staff %}<td><a href=/admin/>管理</a></td>{% endif %}
+			{% endif %}
+		</tr>
 	</table>
 	<table border = "1">
 	  <tr>
-	    <td><a href="/oj/">首页</td>
-	    <td><a href="/oj/users/">排名</a></td>
-	    <td><a href="/oj/volume/">题目</a></td>
-	    <td><a href="/oj/judge/">判题结果</a></td>
-	    <td><a href="/oj/contest/">比赛</a></td>
+		<td><a href="/">首页</td>
+
+		{% if userprofile.incontest %}
+			<td><a href="/contest/{{userprofile.contest.id}}/login">题目</a></td>
+			<td><a href="/contest/{{userprofile.contest.id}}/userlist/">比赛排名</a></td>
+			<td><a href="/contest/{{userprofile.contest.id}}/judgelist">比赛判题结果</a></td>
+			<td><a href="/contest/logout/">退出比赛</a></td>
+		{% else %}
+			<td><a href="/volume/">题目</a></td>
+			<td><a href="/users/">排名</a></td>
+			<td><a href="/judge/">判题结果</a></td>
+			<td><a href="/contest/">比赛</a></td>
+		{% endif %}
 	  </tr>
 	</table>
 	{% endblock %}
-      </div>
-      <hr />
-      <div id="container">
-        {% block content %} content {% endblock %}
-      </div>
+	  </div>
+	  <hr />
+
+	
+	  <div id="container">
+		{% block content %} content {% endblock %}
+	  </div>
 
 
-      <div id="navigator">
+	  <div id="navigator">
 {% block navigator %}
 {% if is_paginated %}
 <table border = 1>
@@ -57,13 +67,13 @@
 {% endif %}
 {% endblock %}
 
-      </div>
+	  </div>
 
-      <hr />
+	  <hr />
 
-      <div id="footer">
-        <p>Powered by <a href="http://www.djangoproject.com/">Django</a> | Powered by <a href="http://www.python.org/">Python</a> | 
-&copy; 2006 <a href="http://czk.8866.org/">czk</a> </p>
-      </div>
-    </body>
+	  <div id="footer">
+		<p>Powered by <a href="http://www.djangoproject.com/">Django</a> | Powered by <a href="http://www.python.org/">Python</a> | 
+&copy; 2009 <a href="http://czk.8866.org/">czk & ymc</a> </p>
+	  </div>
+	</body>
 </html>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<h2>用户列表</h2>
+<table border = 1>
+<tr>
+{#  <td>用户编号</td> #}
+  <td>用户名</td>
+  <td>姓名</td>
+  <td>班级</td>
+  <td>AC题数</td>
+  <td>AC总数</td>
+  <td>提交</td>
+</tr>
+
+{% for user in contestusers %}
+
+<tr>
+{#   <td><a href="/users/{{user.user.id}}/"> {{user.user.id}} </a> </td>  #}
+	<td><a href="/contest/{{user.contest.id}}/users/{{user.userprofile.user.id}}/"> {{user.userprofile.user.username}} </a> </td>
+	<td><a href="/contest/{{user.contest.id}}/users/{{user.userprofile.user.id}}/"> {{user.userprofile.name}} </a> </td>
+	<td><a href="/contest/{{user.contest.id}}/users/{{user.userprofile.user.id}}/"> {{user.userprofile.classes}} </a> </td>
+	<td><a href="/judge/?user={{user.userprofile.user.id}}&result=AC"> {{user.accept_problems_counts}} </a> </td>
+	<td><a href="/judge/?user={{user.userprofile.user.id}}&result=AC"> {{user.accept_counts}} </a> </td>
+	<td><a href="/judge/?user={{user.userprofile.user.id}}"> {{user.submit_counts}} </a> </td>
+
+</tr>
+
+{% endfor %}
+</table>
+
+<hr />
+<table>
+  <tr>
+    {% if user.is_superuser  %}
+    <td><a href="/contest/{{ contest.id }}/regenerate/">重新统计</a></td>
+    {% endif %}
+  </tr>
+</table>
+
+{% endblock %}

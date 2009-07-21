@@ -14,10 +14,10 @@
 </tr>
 {% for problem in object.problem.all %}
 <tr>
-   <td><a href="/oj/problem/{{problem.id}}/"> {{problem.id}} </a> </td>
-   <td><a href="/oj/problem/{{problem.id}}/"> {{problem.title}} </a> </td>
-   <td><a href="/oj/judge/?problem={{problem.id}}&result=AC"> {{problem.accept_counts}}</a></td>
-   <td><a href="/oj/judge/?problem={{problem.id}}/"> {{problem.submit_counts}}</a></td>
+   <td><a href="/problem/{{problem.id}}/"> {{problem.id}} </a> </td>
+   <td><a href="/problem/{{problem.id}}/"> {{problem.title}} </a> </td>
+   <td><a href="/judge/?problem={{problem.id}}&result=AC"> {{problem.accept_counts}}</a></td>
+   <td><a href="/judge/?problem={{problem.id}}/"> {{problem.submit_counts}}</a></td>
 </tr>
 {% endfor %}
 
@@ -27,7 +27,7 @@
 <table>
   <tr>
     {% if user.is_superuser %}
-    <td><a href="/oj/volume/{{object.id}}/regenerate/">重新统计</a></td>
+    <td><a href="/volume/{{object.id}}/regenerate/">重新统计</a></td>
     {% endif %}
   </tr>
 </table>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-用户详细信息 - {{object.user.id}} {{object.user.username}} 
+用户详细信息 - {{user.id}} {{userprofile.name}} 
 {% endblock %}
 
 {% block content %}
@@ -8,40 +8,51 @@
 
 <table border = 1>
   <tr>
-    <td>用户编号</td><td> {{object.user.id}}</td>
+{#    <td>用户编号</td><td> {{object.user.id}}</td> #}
   </tr>
   <tr>
-    <td>用户名</td><td> {{object.user.username}}</td>
+    <td>用户名</td><td> {{userdetail.user.username}}</td>
   </tr>
   <tr>
-    <td>真实姓名</td><td> {{object.user.first_name}}</td>
+    <td>真实姓名</td><td> {{userdetail.name}}</td>
   </tr>
+<tr>
+  <td>班级</td><td> {{userdetail.classes}}</td>
+</tr>
 
   <tr>
-    <td>最后登录时间</td><td>{{object.user.last_login}}</td>
+    <td>最后登录时间</td><td>{{userdetail.user.last_login|date:"Y-m-j,G:i:s"}}</td>
   </tr>
   <tr>
-    <td>提交次数</td><td>{{object.submit_counts}}</td>
+    <td>提交次数</td><td>{{userdetail.submit_counts}}</td>
   </tr>
   <tr>
-    <td>成功提交次数</td><td>{{object.accept_counts}}</td>
+    <td>成功提交次数</td><td>{{userdetail.accept_counts}}</td>
   </tr>
   <tr>
-    <td>成功提交题数</td><td>{{object.accept_problems_counts}}</td>
+    <td>成功提交题数</td><td>{{userdetail.accept_problems_counts}}</td>
   </tr>
   <tr>
     <td>成功提交的题目</td>
     <td>
-      {% for problem in object.accept_problems.all %}
-      <a href="/oj/problem/{{problem.id}}/">{{problem.id}}</a> 
+      {% for problem in userdetail.accept_problems.all %}
+      <a href="/problem/{{problem.id}}/">{{problem.id}}</a> 
       {% endfor %}
     </td>
   </tr>
+<tr>
+   <td>成功的提交</td>
+   <td>
+     {% for judge in judges %}
+     <a href="/judge/{{judge.id}}/">{{judge.problem.id}}</a> 
+     {% endfor %}
+   </td>
+ </tr>
 </table>
 <hr/>
 <table>
   <tr>
-    <td><a href='/oj/judge/?user={{object.user.id}}'>判题结果</a></td>
+    <td><a href='/judge/?user={{user.id}}'>判题结果</a></td>
   </tr>
 </table
 
